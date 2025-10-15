@@ -11,6 +11,9 @@ if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }
 const title = t("contact", "title", lang);
 const subtitle = t("contact", "subtitle", lang);
 const url = Astro.url.href;
+const sent = Astro.url.searchParams.get('sent');
+const error = Astro.url.searchParams.get('error');
+const e = Astro.url.searchParams.get('e');
 ---
 <Base title={title} desc={subtitle} url={url} lang={lang}>
   <Header lang={lang} />
@@ -18,18 +21,32 @@ const url = Astro.url.href;
     <h1 class="text-3xl font-semibold">{title}</h1>
     <p class="mt-2 text-[var(--color-muted)]">{subtitle}</p>
 
-    <form class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 card p-6" method="post" action="#">
+    {sent && (
+      <div id="sent-alert" role="status" class="mt-4 rounded-lg border border-green-800/40 bg-green-900/20 text-green-200 px-4 py-3">
+        Message sent successfully.
+      </div>
+    )}
+    {error && (
+      <div class="mt-4 rounded-lg border border-red-800/40 bg-red-900/20 text-red-200 px-4 py-3">
+        Failed to send message. {e === 'val' && 'Please fill the form correctly (message ≥ 5 chars).'}
+        {e === 'auth' && 'Auth failed. Check MAIL_USER/MAIL_PASS.'}
+        {e === 'conn' && 'Connection failed. Check network/port 465.'}
+        {!e && 'Please try again.'}
+      </div>
+    )}
+
+    <form class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 card p-6" method="post" action={`/api/contact?lang=${lang}`}>
       <label class="text-sm">
         <span>Name</span>
-        <input class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" name="name" required />
+        <input class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" name="name" required minlength="1" maxlength="100" />
       </label>
       <label class="text-sm">
         <span>Email</span>
-        <input class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" type="email" name="email" required />
+        <input class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" type="email" name="email" required maxlength="254" />
       </label>
       <label class="text-sm md:col-span-2">
         <span>Message</span>
-        <textarea class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" name="message" rows="4" required></textarea>
+        <textarea class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" name="message" rows="4" required minlength="5" maxlength="5000" placeholder="Please enter at least 5 characters"></textarea>
       </label>
       <div class="md:col-span-2">
         <button class="btn btn-primary">Send</button>
@@ -38,4 +55,23 @@ const url = Astro.url.href;
 
     <Footer lang={lang} />
   </main>
+  <script>
+    (function () {
+      var alert = document.getElementById('sent-alert');
+      if (alert) {
+        // Auto dismiss after 4s with a small fade
+        setTimeout(function () {
+          alert.style.transition = 'opacity 200ms ease';
+          alert.style.opacity = '0';
+          setTimeout(function () { alert.remove(); }, 240);
+        }, 4000);
+        // Clean the URL so refreshing doesn't re-show the banner
+        try {
+          var url = new URL(window.location.href);
+          url.searchParams.delete('sent');
+          window.history.replaceState({}, document.title, url.toString());
+        } catch (_) {}
+      }
+    })();
+  </script>
 </Base>
