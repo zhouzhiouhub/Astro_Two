@@ -18,8 +18,8 @@
 本地开发可用 PowerShell 临时设置（不写入仓库）：
 
 ```
-$env:MAIL_USER="zhouzhiou9588@163.com"
-$env:MAIL_PASS="PCet2pdBv92Q4bhh"
+MAIL_USER=<your_email>@163.com
+MAIL_PASS=<your_app_password>
 $env:AUTH_ISSUED_AT="2025-01-01T00:00:00Z"
 $env:AUTH_VALID_DAYS="180"
 $env:ALERT_DAYS="14,7,3,1,0,-1"
@@ -56,4 +56,21 @@ npm run dev
 - 切勿将 `MAIL_PASS` 写入仓库，统一使用部署平台的环境变量功能保存。
 - 建议增加：消息长度限制、人机验证（hCaptcha/Turnstile）、速率限制等防滥用措施。
 - 若部署在无长驻进程的平台（纯静态/仅函数），可以改用“外部定时任务请求一个提醒 API”的方式实现到期提醒；当前实现基于 Node 运行时的定时器。
+
+根目录创建 .env.local
+
+# Copy this file to `.env.local` and fill in real values.
+# Do NOT commit `.env.local` to git.
+
+# 163 account and app password (client authorization code)
+MAIL_USER=<your_email>@163.com
+MAIL_PASS=<your_app_password>
+
+# Optional: Sender display name
+MAIL_FROM_NAME=Contact
+
+# Auth code issued time and validity (for expiry alerts)
+AUTH_ISSUED_AT=2025-01-01T00:00:00Z
+AUTH_VALID_DAYS=180
+ALERT_DAYS=14,7,3,1,0,-1
 
