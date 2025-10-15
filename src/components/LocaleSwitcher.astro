@@ -4,25 +4,62 @@ import { pathWithLocale } from "@/lib/i18n";
 const { lang = 'en', path = '/' } = Astro.props as { lang: Locale; path?: string };
 ---
 <div class="relative">
-  <button type="button" class="inline-flex items-center gap-1 text-sm text-white/90 hover:text-white" aria-haspopup="menu" aria-expanded="false" id="lang-btn">
+  <button
+    type="button"
+    id="lang-btn"
+    aria-haspopup="menu"
+    aria-expanded="false"
+    class="inline-flex items-center gap-1 text-sm text-[var(--color-muted)] hover:text-[var(--color-fg)]"
+  >
     {lang === 'zh' ? '中文' : 'EN'}
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </svg>
   </button>
-  <ul id="lang-menu" class="invisible opacity-0 pointer-events-none z-20 absolute right-0 mt-2 min-w-[120px] rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-1 text-sm transition" role="menu" aria-labelledby="lang-btn">
-    <li><a class={`block rounded px-3 py-2 hover:bg-white/5 ${lang==='en'?'text-white':'text-[var(--color-muted)]'}`} href={pathWithLocale('en', path)}>English</a></li>
-    <li><a class={`block rounded px-3 py-2 hover:bg-white/5 ${lang==='zh'?'text-white':'text-[var(--color-muted)]'}`} href={pathWithLocale('zh', path)}>中文</a></li>
+
+  <ul
+    id="lang-menu"
+    role="menu"
+    aria-labelledby="lang-btn"
+    class="invisible opacity-0 pointer-events-none z-20 absolute right-0 mt-2 min-w-[140px] rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-1 text-sm transition shadow-sm dark:shadow-glow"
+  >
+    <li>
+      <a
+        href={pathWithLocale('en', path)}
+        class={`block rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5 ${lang==='en' ? 'text-[var(--color-fg)]' : 'text-[var(--color-muted)]'}`}
+        role="menuitem"
+      >
+        English
+      </a>
+    </li>
+    <li>
+      <a
+        href={pathWithLocale('zh', path)}
+        class={`block rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5 ${lang==='zh' ? 'text-[var(--color-fg)]' : 'text-[var(--color-muted)]'}`}
+        role="menuitem"
+      >
+        中文
+      </a>
+    </li>
   </ul>
+
   <script>
     const btn = document.getElementById('lang-btn');
     const menu = document.getElementById('lang-menu');
     function open(v){
       if(!menu) return;
-      if(v){ menu.classList.remove('invisible','opacity-0','pointer-events-none'); menu.classList.add('pointer-events-auto'); }
-      else { menu.classList.add('invisible','opacity-0','pointer-events-none'); }
+      if(v){
+        menu.classList.remove('invisible','opacity-0','pointer-events-none');
+        menu.classList.add('pointer-events-auto');
+      } else {
+        menu.classList.add('invisible','opacity-0','pointer-events-none');
+        menu.classList.remove('pointer-events-auto');
+      }
     }
     let shown = false;
-    menu?.addEventListener('click', (e)=> e.stopPropagation()); // 避免内部点击冒泡，确保链接可点击
+    menu?.addEventListener('click', (e)=> e.stopPropagation());
     btn?.addEventListener('click', (e)=>{ e.stopPropagation(); shown=!shown; open(shown); });
     window.addEventListener('click', (e)=>{ if(menu && menu.contains(e.target)) return; shown=false; open(false); });
   </script>
 </div>
+

@@ -1,6 +1,11 @@
 ---
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 const { lang = 'en' } = Astro.props as { lang?: string };
-const links = [
+
+const rawLinks = [
   { label: 'QQ', icon: '/icons/social/qq.svg', href: '#' },
   { label: 'WeChat', icon: '/icons/social/wechat.svg', href: '#' },
   { label: 'Discord', icon: '/icons/social/discord.svg', href: '#' },
@@ -11,13 +16,20 @@ const links = [
   { label: 'X', icon: '/icons/social/x.svg', href: '#' },
   { label: 'Facebook', icon: '/icons/social/facebook.svg', href: '#' },
 ];
+
+const iconsDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../public/icons/social');
+const links = rawLinks.map((l) => {
+  const file = path.basename(l.icon);
+  const svg = fs.readFileSync(path.join(iconsDir, file), 'utf8');
+  return { ...l, svg };
+});
 ---
 <footer class="container py-10 border-t border-[var(--color-border)] mt-16">
   <ul class="flex w-full flex-wrap items-center gap-5 justify-end">
     {links.map((l) => (
       <li>
         <a class="group inline-flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-soft)]/80 hover:bg-white/5 transition" href={l.href} target="_blank" rel="noopener noreferrer" aria-label={l.label} title={l.label}>
-          <img src={l.icon} alt="" class="h-full w-full opacity-90 group-hover:opacity-100" />
+          <span class="h-full w-full opacity-90 group-hover:opacity-100 [&>svg]:h-full [&>svg]:w-full" aria-hidden="true" set:html={l.svg} />
           <span class="sr-only">{l.label}</span>
         </a>
       </li>
