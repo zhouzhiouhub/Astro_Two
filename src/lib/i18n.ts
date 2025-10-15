@@ -13,7 +13,10 @@ type Namespaced = Record<
   | "videos"
   | "faq"
   | "about"
-  | "download",
+  | "download"
+  | "blog"
+  | "projects"
+  | "notes",
   Dict
 >;
 
@@ -24,6 +27,9 @@ const en: Namespaced = {
     nav_pricing: "Pricing",
     nav_contact: "Contact",
     nav_home: "Home",
+    nav_blog: "Blog",
+    nav_projects: "Projects",
+    nav_notes: "Notes",
     nav_product: "Product",
     nav_videos: "Videos",
     nav_faq: "FAQ",
@@ -55,6 +61,9 @@ const en: Namespaced = {
     subtitle: "Let’s talk about your use case.",
   },
   product: { title: "Product", subtitle: "Capabilities and platform overview." },
+  blog: { title: "Blog", subtitle: "Latest writings and updates." },
+  projects: { title: "Projects", subtitle: "Showcase of work and contributions." },
+  notes: { title: "Notes", subtitle: "Reusable knowledge and cheat sheets." },
   videos: { title: "Videos", subtitle: "Product walkthroughs and demos." },
   faq: { title: "FAQ", subtitle: "Answers to common questions." },
   about: { title: "About", subtitle: "Our mission and story." },
@@ -68,6 +77,9 @@ const zh: Namespaced = {
     nav_pricing: "定价",
     nav_contact: "联系",
     nav_home: "首页",
+    nav_blog: "博客",
+    nav_projects: "项目",
+    nav_notes: "知识库",
     nav_product: "产品",
     nav_videos: "视频",
     nav_faq: "解答",
@@ -99,6 +111,9 @@ const zh: Namespaced = {
     subtitle: "聊聊你的场景与需求。",
   },
   product: { title: "产品", subtitle: "能力一览与平台总览。" },
+  blog: { title: "博客", subtitle: "最新文章与动态。" },
+  projects: { title: "项目", subtitle: "作品与贡献展示。" },
+  notes: { title: "知识库", subtitle: "可复用的知识与备忘。" },
   videos: { title: "视频", subtitle: "产品演示与上手指南。" },
   faq: { title: "解答", subtitle: "常见问题与答案。" },
   about: { title: "关于", subtitle: "我们的使命与故事。" },

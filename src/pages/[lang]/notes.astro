@@ -1,0 +1,29 @@
+---
+import Base from "@/layouts/BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { t, isLocale } from "@/lib/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "en" } },
+    { params: { lang: "zh" } },
+  ];
+}
+export const prerender = true;
+
+const { lang } = Astro.params;
+if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }
+const title = t("notes", "title", lang);
+const subtitle = t("notes", "subtitle", lang);
+const url = Astro.url.href;
+---
+<Base title={title} desc={subtitle} url={url} lang={lang}>
+  <Header lang={lang} />
+  <main class="container py-12">
+    <h1 class="text-3xl font-semibold">{title}</h1>
+    <p class="mt-2 text-[var(--color-muted)]">{subtitle}</p>
+    <div class="mt-8 text-[var(--color-muted)] text-sm">Coming soon…</div>
+    <Footer lang={lang} />
+  </main>
+</Base>
