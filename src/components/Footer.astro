@@ -1,35 +1,68 @@
 ---
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import qqSvg from '@/assets/qq.svg?raw';
+import wechatSvg from '@/assets/weixin.svg?raw';
+import discordSvg from '@/assets/discord.svg?raw';
+import youtubeSvg from '@/assets/youtube-icon.svg?raw';
+import githubSvg from '@/assets/cib-github.svg?raw';
+import weiboSvg from '@/assets/weibo-fill.svg?raw';
+import linkedinSvg from '@/assets/cib-linkedin.svg?raw';
+import xSvg from '@/assets/twitter.svg?raw';
+import facebookSvg from '@/assets/facebook.svg?raw';
 
 const { lang = 'en' } = Astro.props as { lang?: string };
 
-const rawLinks = [
-  { label: 'QQ', icon: '/icons/social/qq.svg', href: '#' },
-  { label: 'WeChat', icon: '/icons/social/wechat.svg', href: '#' },
-  { label: 'Discord', icon: '/icons/social/discord.svg', href: '#' },
-  { label: 'YouTube', icon: '/icons/social/youtube.svg', href: '#' },
-  { label: 'GitHub', icon: '/icons/social/github.svg', href: '#' },
-  { label: 'Weibo', icon: '/icons/social/weibo.svg', href: '#' },
-  { label: 'LinkedIn', icon: '/icons/social/linkedin.svg', href: '#' },
-  { label: 'X', icon: '/icons/social/x.svg', href: '#' },
-  { label: 'Facebook', icon: '/icons/social/facebook.svg', href: '#' },
-];
+// Normalize SVG to a monochrome, theme-aware style
+// - Remove common background rectangles (24x24 with rounded corners)
+// - Convert fills/strokes to currentColor (except 'none')
+// - Preserve viewBox and geometry; size is controlled by container
+function normalizeSvg(raw: string) {
+  let s = raw
+    // strip XML declaration & comments
+    .replace(/<\?xml[\s\S]*?\?>/gi, '')
+    .replace(/<!--([\s\S]*?)-->/g, '')
+    // drop <title> elements
+    .replace(/<title[^>]*>[\s\S]*?<\/title>/gi, '')
+    // remove background rects (common 24x24 full-canvas)
+    .replace(/<rect[^>]*width=["']\s*24\s*["'][^>]*height=["']\s*24\s*["'][^>]*\/>/gi, '')
+    .replace(/<rect[^>]*x=["']0["'][^>]*y=["']0["'][^>]*\/>/gi, '')
+    // ensure no inline color on <svg> and strip width/height from <svg>
+    .replace(/<svg([^>]*)>/i, (m, attrs) => {
+      const cleaned = attrs
+        .replace(/\s(fill|stroke)=["'][^"']+["']/gi, '')
+        .replace(/\s(width|height)=["'][^"']+["']/gi, '');
+      return `<svg${cleaned}>`;
+    })
+    // map any explicit color to currentColor (except none)
+    .replace(/fill=["'](?!none)[^"']+["']/gi, 'fill="currentColor"')
+    .replace(/stroke=["'](?!none)[^"']+["']/gi, 'stroke="currentColor"');
 
-const iconsDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../public/icons/social');
-const links = rawLinks.map((l) => {
-  const file = path.basename(l.icon);
-  const svg = fs.readFileSync(path.join(iconsDir, file), 'utf8');
-  return { ...l, svg };
-});
+  // Add fill="currentColor" to shapes missing both fill & stroke
+  s = s.replace(/<(path|circle|ellipse|polygon|rect)\b([^>]*)(?<![\/]>)\/?>(?!<\/\1>)/gi, (m) => {
+    if (/\s(fill|stroke)=/i.test(m)) return m;
+    return m.replace(/\/?>(?=$)/, (end) => ` fill="currentColor"${end}`);
+  });
+
+  return s;
+}
+
+const links = [
+  { label: 'QQ', svg: normalizeSvg(qqSvg), href: '#', scale: 0.9 },
+  { label: 'WeChat', svg: normalizeSvg(wechatSvg), href: '#', scale: 0.9 },
+  { label: 'Discord', svg: normalizeSvg(discordSvg), href: '#', scale: 0.9 },
+  { label: 'YouTube', svg: normalizeSvg(youtubeSvg), href: '#', scale: 0.96 },
+  { label: 'GitHub', svg: normalizeSvg(githubSvg), href: '#', scale: 0.96 },
+  { label: 'Weibo', svg: normalizeSvg(weiboSvg), href: '#', scale: 0.9 },
+  { label: 'LinkedIn', svg: normalizeSvg(linkedinSvg), href: '#', scale: 0.94 },
+  { label: 'X', svg: normalizeSvg(xSvg), href: '#', scale: 0.94 },
+  { label: 'Facebook', svg: normalizeSvg(facebookSvg), href: '#', scale: 0.94 },
+];
 ---
 <footer class="container py-10 border-t border-[var(--color-border)] mt-16">
   <ul class="flex w-full flex-wrap items-center gap-5 justify-end">
     {links.map((l) => (
       <li>
-        <a class="group inline-flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-soft)]/80 hover:bg-white/5 transition" href={l.href} target="_blank" rel="noopener noreferrer" aria-label={l.label} title={l.label}>
-          <span class="h-full w-full opacity-90 group-hover:opacity-100 [&>svg]:h-full [&>svg]:w-full" aria-hidden="true" set:html={l.svg} />
+        <a class="group inline-flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-transparent hover:bg-transparent transition text-[var(--color-muted)] hover:text-[var(--color-fg)]" href={l.href} target="_blank" rel="noopener noreferrer" aria-label={l.label} title={l.label}>
+          <span style={`--s:${l.scale ?? 0.9}`} class="h-full w-full opacity-90 group-hover:opacity-100 [&>svg]:h-full [&>svg]:w-full [&>svg]:[transform:scale(var(--s))] [&>svg]:[transform-origin:center]" aria-hidden="true" set:html={l.svg} />
           <span class="sr-only">{l.label}</span>
         </a>
       </li>
