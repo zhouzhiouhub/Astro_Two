@@ -5,8 +5,20 @@ const { title = "zhouzhiou · Darkrise", desc = "Astro business theme", url = ""
 const meta = buildSeo({ title, desc, url });
 ---
 <!doctype html>
-<html lang={lang} class="dark">
+<html lang={lang}>
   <head>
+    <script is:inline>
+      try {
+        const key = 'theme';
+        const stored = localStorage.getItem(key);
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const dark = stored ? stored === 'dark' : prefersDark;
+        const html = document.documentElement;
+        if (dark) html.classList.add('dark'); else html.classList.remove('dark');
+      } catch (_) {
+        // no-op if storage is unavailable
+      }
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{meta.title}</title>
@@ -28,4 +40,3 @@ const meta = buildSeo({ title, desc, url });
   </body>
   
 </html>
-

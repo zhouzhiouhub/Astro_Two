@@ -3,7 +3,20 @@
 @tailwind utilities;
 
 @layer base {
+  /* Light theme (default) */
   :root {
+    --color-bg: #ffffff;
+    --color-bg-soft: #F7F8FB;
+    --color-fg: #0B0D12;
+    --color-muted: #4B5563;
+    --color-border: #E5E7EB;
+    --color-primary: #5B8CFF;
+    --color-secondary: #AA5BFF;
+    --gradient-primary: linear-gradient(135deg, #5B8CFF 0%, #AA5BFF 100%);
+  }
+
+  /* Dark theme overrides */
+  .dark {
     --color-bg: #0D1117;
     --color-bg-soft: #0F121A;
     --color-fg: #E6EAF2;
@@ -11,10 +24,11 @@
     --color-border: #1b2130;
     --color-primary: #5B8CFF;
     --color-secondary: #AA5BFF;
-    --gradient-primary: linear-gradient(135deg, #5B8CFF 0%, #AA5BFF 100%);
   }
 
-  html { color-scheme: dark; }
+  html { color-scheme: light; }
+  html.dark { color-scheme: dark; }
+
   body {
     background: var(--color-bg);
     color: var(--color-fg);
