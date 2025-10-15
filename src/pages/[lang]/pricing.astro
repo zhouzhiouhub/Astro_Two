@@ -1,0 +1,23 @@
+---
+import Base from "@/layouts/BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import PricingTable from "@/components/PricingTable.astro";
+import Footer from "@/components/Footer.astro";
+import { t, isLocale } from "@/lib/i18n";
+
+ const prerender = true;
+
+const { lang } = Astro.params;
+if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }
+const title = t("pricing", "title", lang);
+const subtitle = t("pricing", "subtitle", lang);
+const url = Astro.url.href;
+---
+<Base title={title} desc={subtitle} url={url} lang={lang}>
+  <Header lang={lang} />
+
+  <main>
+    <PricingTable title={title} subtitle={subtitle} cta={t('common','cta_primary', lang)} />
+    <Footer lang={lang} />
+  </main>
+</Base>

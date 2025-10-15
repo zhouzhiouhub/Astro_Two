@@ -1,0 +1,23 @@
+---
+---
+<section class="container py-16">
+  <h2 class="text-2xl font-semibold mb-6">What customers say</h2>
+  <div class="overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none]" style="scrollbar-width:none;">
+    <div class="flex gap-4 snap-x snap-mandatory">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <figure class="card p-6 min-w-[320px] snap-center">
+          <div class="flex items-center gap-3">
+            <div class="h-8 w-8 rounded-full bg-white/10"></div>
+            <figcaption class="text-sm">
+              <div class="font-medium">Alex {i+1}</div>
+              <div class="text-[var(--color-muted)]">CTO, Tech Co.</div>
+            </figcaption>
+          </div>
+          <blockquote class="mt-4 text-sm text-[var(--color-muted)]">
+            “Darkrise boosted our conversion and kept our CLS near zero.”
+          </blockquote>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>

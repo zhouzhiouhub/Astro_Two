@@ -1,0 +1,21 @@
+---
+import { t, type Locale } from "@/lib/i18n";
+import LocaleSwitcher from "./LocaleSwitcher.astro";
+const { lang } = Astro.props as { lang: Locale };
+---
+<header class="container flex items-center justify-between py-6">
+  <a href={`/${lang}`} class="flex items-center gap-2">
+    <img src="/logo.svg" alt="zhouzhiou" width="28" height="28"/>
+    <span class="sr-only">Home</span>
+  </a>
+  <nav class="hidden md:flex items-center gap-8 text-sm text-[var(--color-muted)]">
+    <a href={`/${lang}`}>{t('common','nav_home', lang)}</a>
+    <a href={`/${lang}/product`}>{t('common','nav_product', lang)}</a>
+    <a href={`/${lang}/videos`}>{t('common','nav_videos', lang)}</a>
+    <a href={`/${lang}/faq`}>{t('common','nav_faq', lang)}</a>
+    <a href={`/${lang}/about`}>{t('common','nav_about', lang)}</a>
+    <a href={`/${lang}/download`}>{t('common','nav_download', lang)}</a>
+    <LocaleSwitcher lang={lang} path={Astro.url.pathname} />
+  </nav>
+</header>
+

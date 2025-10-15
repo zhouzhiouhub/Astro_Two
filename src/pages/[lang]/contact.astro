@@ -1,0 +1,41 @@
+---
+import Base from "@/layouts/BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { t, isLocale } from "@/lib/i18n";
+
+ const prerender = true;
+
+const { lang } = Astro.params;
+if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }
+const title = t("contact", "title", lang);
+const subtitle = t("contact", "subtitle", lang);
+const url = Astro.url.href;
+---
+<Base title={title} desc={subtitle} url={url} lang={lang}>
+  <Header lang={lang} />
+  <main class="container py-12">
+    <h1 class="text-3xl font-semibold">{title}</h1>
+    <p class="mt-2 text-[var(--color-muted)]">{subtitle}</p>
+
+    <form class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 card p-6" method="post" action="#">
+      <label class="text-sm">
+        <span>Name</span>
+        <input class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" name="name" required />
+      </label>
+      <label class="text-sm">
+        <span>Email</span>
+        <input class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" type="email" name="email" required />
+      </label>
+      <label class="text-sm md:col-span-2">
+        <span>Message</span>
+        <textarea class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" name="message" rows="4" required></textarea>
+      </label>
+      <div class="md:col-span-2">
+        <button class="btn btn-primary">Send</button>
+      </div>
+    </form>
+
+    <Footer lang={lang} />
+  </main>
+</Base>

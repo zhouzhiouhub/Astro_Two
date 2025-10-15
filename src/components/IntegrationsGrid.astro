@@ -1,0 +1,15 @@
+---
+interface Item { name: string; icon: string }
+const { title = 'Integrations', items = [] } = Astro.props as { title?: string; items: Item[] };
+---
+<section class="container py-16">
+  <h2 class="text-2xl font-semibold mb-6">{title}</h2>
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+    {items.map((it) => (
+      <div class="card p-4 flex items-center justify-center gap-2" aria-label={it.name} title={it.name}>
+        <img src={it.icon} alt="" width="24" height="24" class="opacity-80" />
+        <span class="text-sm text-[var(--color-muted)]">{it.name}</span>
+      </div>
+    ))}
+  </div>
+</section>

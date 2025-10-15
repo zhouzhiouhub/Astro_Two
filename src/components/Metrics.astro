@@ -1,0 +1,15 @@
+---
+interface Metric { label: string; value: string; hint?: string }
+const { items = [] } = Astro.props as { items: Metric[] };
+---
+<section class="container py-12">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {items.map((m) => (
+      <div class="card p-6">
+        <div class="text-sm text-[var(--color-muted)]">{m.label}</div>
+        <div class="mt-2 text-3xl font-semibold tabular-nums">{m.value}</div>
+        {m.hint && <div class="mt-2 text-sm text-[var(--color-muted)]">{m.hint}</div>}
+      </div>
+    ))}
+  </div>
+</section>

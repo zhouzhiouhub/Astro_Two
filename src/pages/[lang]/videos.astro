@@ -1,0 +1,40 @@
+---
+import Base from "@/layouts/BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { t, isLocale } from "@/lib/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "en" } },
+    { params: { lang: "zh" } },
+  ];
+}
+export const prerender = true;
+
+const { lang } = Astro.params;
+if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }
+const title = t("videos", "title", lang);
+const subtitle = t("videos", "subtitle", lang);
+const url = Astro.url.href;
+---
+<Base title={title} desc={subtitle} url={url} lang={lang}>
+  <Header lang={lang} />
+  <main class="container py-12">
+    <h1 class="text-3xl font-semibold">{title}</h1>
+    <p class="mt-2 text-[var(--color-muted)]">{subtitle}</p>
+    <section class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <article class="card p-0 overflow-hidden">
+          <div class="aspect-video bg-white/5" />
+          <div class="p-4">
+            <h3 class="text-base font-medium">Demo {i+1}</h3>
+            <p class="mt-1 text-sm text-[var(--color-muted)]">Walkthrough clip.</p>
+          </div>
+        </article>
+      ))}
+    </section>
+    <Footer lang={lang} />
+  </main>
+</Base>
+

@@ -1,0 +1,25 @@
+---
+import { t, type Locale } from "@/lib/i18n";
+const { lang = 'en' } = Astro.props as { lang: Locale };
+---
+<div id="cookie-banner" class="fixed inset-x-0 bottom-0 z-50 hidden md:flex items-center justify-between gap-4 border-t border-[var(--color-border)] px-4 py-3 backdrop-blur" style="background: var(--color-bg-soft);">
+  <p class="text-sm text-[var(--color-muted)]">{t('common','cookie_text', lang)}</p>
+  <div class="flex items-center gap-2">
+    <button class="btn btn-secondary" id="cookie-decline">{t('common','cookie_decline', lang)}</button>
+    <button class="btn btn-primary" id="cookie-accept">{t('common','cookie_accept', lang)}</button>
+  </div>
+</div>
+
+<script>
+  const key = 'cookie-consent';
+  const el = document.getElementById('cookie-banner');
+  const accept = document.getElementById('cookie-accept');
+  const decline = document.getElementById('cookie-decline');
+  try {
+    if (el && !localStorage.getItem(key)) {
+      el.classList.remove('hidden');
+    }
+    accept?.addEventListener('click', () => { localStorage.setItem(key, 'accepted'); el?.classList.add('hidden'); });
+    decline?.addEventListener('click', () => { localStorage.setItem(key, 'declined'); el?.classList.add('hidden'); });
+  } catch {}
+</script>

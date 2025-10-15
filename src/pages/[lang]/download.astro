@@ -1,0 +1,43 @@
+---
+import Base from "@/layouts/BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { t, isLocale } from "@/lib/i18n";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: "en" } },
+    { params: { lang: "zh" } },
+  ];
+}
+export const prerender = true;
+
+const { lang } = Astro.params;
+if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }
+const title = t("download", "title", lang);
+const subtitle = t("download", "subtitle", lang);
+const url = Astro.url.href;
+---
+<Base title={title} desc={subtitle} url={url} lang={lang}>
+  <Header lang={lang} />
+  <main class="container py-12">
+    <h1 class="text-3xl font-semibold">{title}</h1>
+    <p class="mt-2 text-[var(--color-muted)]">{subtitle}</p>
+    <div class="mt-8 grid md:grid-cols-3 gap-6">
+      <a class="card p-6 hover:shadow-glow transition" href="#">
+        <h3 class="text-lg font-medium">macOS</h3>
+        <p class="mt-1 text-sm text-[var(--color-muted)]">Apple Silicon & Intel</p>
+      </a>
+      <a class="card p-6 hover:shadow-glow transition" href="#">
+        <h3 class="text-lg font-medium">Windows</h3>
+        <p class="mt-1 text-sm text-[var(--color-muted)]">x64</p>
+      </a>
+      <a class="card p-6 hover:shadow-glow transition" href="#">
+        <h3 class="text-lg font-medium">Linux</h3>
+        <p class="mt-1 text-sm text-[var(--color-muted)]">AppImage / tar.gz</p>
+      </a>
+    </div>
+    <Footer lang={lang} />
+  </main>
+</Base>
+

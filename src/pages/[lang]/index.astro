@@ -1,0 +1,48 @@
+---
+import Base from "@/layouts/BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import Hero from "@/components/Hero.astro";
+import Metrics from "@/components/Metrics.astro";
+import IntegrationsGrid from "@/components/IntegrationsGrid.astro";
+import PricingTable from "@/components/PricingTable.astro";
+import TestimonialCarousel from "@/components/TestimonialCarousel.astro";
+import FAQAccordion from "@/components/FAQAccordion.astro";
+import Footer from "@/components/Footer.astro";
+import CookieBanner from "@/components/CookieBanner.astro";
+import { t, isLocale } from "@/lib/i18n";
+
+ const prerender = true;
+
+const { lang } = Astro.params;
+if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }
+const title = t("home", "title", lang);
+const subtitle = t("home", "subtitle", lang);
+const badge = t("home", "badge", lang);
+const url = Astro.url.href;
+---
+<Base title={title} desc={subtitle} url={url} lang={lang}>
+  <Header lang={lang} />
+
+  <main>
+    <Hero badge={badge} title={title} subtitle={subtitle} ctaPrimary={t('common','cta_primary', lang)} ctaSecondary={t('common', 'cta_secondary', lang)} />
+    <Metrics items={[
+      {label: 'MRR', value: '$128k', hint: '+12% MoM'},
+      {label: 'Active Accounts', value: '3,204', hint: '99.9% uptime'},
+      {label: 'Queries / min', value: '108,452', hint: 'global edge network'},
+    ]} />
+    <IntegrationsGrid title={t('integrations','title', lang)} items={[
+      {name:'Stripe', icon:'/icons/brands/stripe.svg'},
+      {name:'Vercel', icon:'/icons/brands/vercel.svg'},
+      {name:'Slack', icon:'/icons/brands/slack.svg'},
+      {name:'Notion', icon:'/icons/brands/notion.svg'},
+      {name:'Zapier', icon:'/icons/brands/zapier.svg'},
+      {name:'HubSpot', icon:'/icons/brands/hubspot.svg'},
+    ]}/>
+    <PricingTable title={t('pricing','title', lang)} subtitle={t('pricing','subtitle', lang)} cta={t('common','cta_primary', lang)} />
+    <TestimonialCarousel />
+    <FAQAccordion lang={lang} />
+    <Footer lang={lang} />
+  </main>
+
+  <CookieBanner lang={lang} />
+</Base>

@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg: #0D1117;
+    --color-bg-soft: #0F121A;
+    --color-fg: #E6EAF2;
+    --color-muted: #A9B0BE;
+    --color-border: #1b2130;
+    --color-primary: #5B8CFF;
+    --color-secondary: #AA5BFF;
+    --gradient-primary: linear-gradient(135deg, #5B8CFF 0%, #AA5BFF 100%);
+  }
+
+  html { color-scheme: dark; }
+  body {
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-feature-settings: "ss01" on, "ss02" on;
+    font-variant-numeric: tabular-nums;
+  }
+
+  a { color: inherit; text-decoration: none; }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-xl px-5 py-3 font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-0;
+  }
+  .btn-primary { background: var(--gradient-primary); color: #0B0D12; }
+  .btn-secondary { @apply bg-transparent border border-[var(--color-border)] text-[var(--color-fg)]; background: rgba(255,255,255,0.03); }
+  .card { @apply rounded-xl border border-[var(--color-border)] backdrop-blur; box-shadow: var(--shadow, none); background: var(--color-bg-soft); }
+  .badge { @apply inline-flex items-center rounded-full border border-[var(--color-border)] px-3 py-1 text-xs tracking-wide text-[var(--color-muted)]; background: rgba(255,255,255,0.03); }
+}

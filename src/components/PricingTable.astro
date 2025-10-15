@@ -1,0 +1,66 @@
+---
+const { title = 'Pricing', subtitle = '', cta = 'Get Template' } = Astro.props as { title?: string; subtitle?: string; cta?: string };
+---
+<section class="container py-16">
+  <div class="mb-8">
+    <h2 class="text-3xl font-semibold">{title}</h2>
+    {subtitle && <p class="mt-2 text-[var(--color-muted)]">{subtitle}</p>}
+  </div>
+
+  <div class="mb-6 flex items-center gap-3">
+    <input id="bill" type="checkbox" class="peer sr-only" aria-label="Toggle billing" />
+    <span class="text-sm">Monthly</span>
+    <label for="bill" class="relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full bg-[var(--color-border)] p-1">
+      <span class="h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></span>
+    </label>
+    <span class="text-sm">Yearly</span>
+    <span class="ml-2 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs text-emerald-300">Save 20%</span>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="card p-6">
+      <h3 class="text-xl font-semibold">Starter</h3>
+      <p class="mt-1 text-sm text-[var(--color-muted)]">For personal projects</p>
+      <div class="mt-4">
+        <div class="peer-not-checked:block hidden">$19<span class="text-sm text-[var(--color-muted)]">/mo</span></div>
+        <div class="peer-checked:block hidden">$15<span class="text-sm text-[var(--color-muted)]">/mo billed yearly</span></div>
+      </div>
+      <ul class="mt-4 space-y-2 text-sm text-[var(--color-muted)]">
+        <li>1 project</li>
+        <li>Community support</li>
+      </ul>
+      <a class="btn btn-secondary mt-6 w-full" href="#get">{cta}</a>
+    </div>
+
+    <div class="card p-6 border border-primary/40" style="box-shadow: 0 0 0 1px rgba(91,140,255,.4), 0 8px 32px rgba(170,91,255,.15);">
+      <div class="badge">Most Popular</div>
+      <h3 class="mt-2 text-xl font-semibold">Growth</h3>
+      <p class="mt-1 text-sm text-[var(--color-muted)]">For growing teams</p>
+      <div class="mt-4">
+        <div class="peer-not-checked:block hidden">$49<span class="text-sm text-[var(--color-muted)]">/mo</span></div>
+        <div class="peer-checked:block hidden">$39<span class="text-sm text-[var(--color-muted)]">/mo billed yearly</span></div>
+      </div>
+      <ul class="mt-4 space-y-2 text-sm text-[var(--color-muted)]">
+        <li>Up to 5 projects</li>
+        <li>Email support</li>
+        <li>Advanced analytics</li>
+      </ul>
+      <a class="btn btn-primary mt-6 w-full" href="#get">{cta}</a>
+    </div>
+
+    <div class="card p-6">
+      <h3 class="text-xl font-semibold">Enterprise</h3>
+      <p class="mt-1 text-sm text-[var(--color-muted)]">Custom solutions</p>
+      <div class="mt-4">
+        <div class="peer-not-checked:block hidden">$199<span class="text-sm text-[var(--color-muted)]">/mo</span></div>
+        <div class="peer-checked:block hidden">$159<span class="text-sm text-[var(--color-muted)]">/mo billed yearly</span></div>
+      </div>
+      <ul class="mt-4 space-y-2 text-sm text-[var(--color-muted)]">
+        <li>Unlimited projects</li>
+        <li>Priority support</li>
+        <li>SSO & audit logs</li>
+      </ul>
+      <a class="btn btn-secondary mt-6 w-full" href="#get">Contact Sales</a>
+    </div>
+  </div>
+</section>
