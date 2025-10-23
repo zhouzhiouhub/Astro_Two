@@ -1,0 +1,28 @@
+---
+import { t, type Locale } from "@/lib/i18n";
+const { lang } = Astro.props as { lang: Locale };
+---
+<button data-article-search
+  class="inline-flex items-center gap-2 rounded-md border border-[var(--color-border)] bg-[var(--color-bg-soft)] px-3 py-2 text-sm hover:bg-black/5 dark:hover:bg-white/5"
+  aria-label={t('common','search', lang)}>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+  <span>{t('common','search', lang)}</span>
+</button>
+
+<script>
+  (function(){
+    function openSearch(){
+      const ev = new CustomEvent('open-search', { detail: { lang: `${lang}` } });
+      window.dispatchEvent(ev);
+    }
+    document.querySelectorAll('button[data-article-search]')
+      .forEach(btn => btn.addEventListener('click', (e) => { e.preventDefault(); openSearch(); }));
+    if (!window._articleSearchKeysBound) {
+      window._articleSearchKeysBound = true;
+      window.addEventListener('keydown', (e)=>{
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openSearch(); }
+        if (!e.ctrlKey && !e.metaKey && e.key === '/' && (document.activeElement === document.body)) { e.preventDefault(); openSearch(); }
+      });
+    }
+  })();
+</script>

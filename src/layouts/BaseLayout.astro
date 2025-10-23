@@ -1,11 +1,12 @@
 ---
 import "../styles/tailwind.css";
+import SearchModal from "@/components/SearchModal.astro";
 import { seo as buildSeo } from "@/lib/seo";
 const { title = "zhouzhiou · ZHIOU", desc = "Astro business theme", url = "", lang = "en", noindex = false } = Astro.props;
 const meta = buildSeo({ title, desc, url });
 ---
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} data-pagefind-filter={`language:${lang}`}>
   <head>
     <script is:inline>
       try {
@@ -35,8 +36,9 @@ const meta = buildSeo({ title, desc, url });
     <meta name="twitter:image" content={meta.og.image} />
     <link rel="icon" href="/favicon.svg" />
   </head>
-  <body>
+  <body data-pagefind-body>
     <slot />
+    <SearchModal lang={lang} />
   </body>
   
 </html>
