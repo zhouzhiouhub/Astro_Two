@@ -94,7 +94,7 @@ export const zh: Namespaced = {
   testimonials: {
     title: "客户怎么说",
     role_cto: "技术公司 CTO",
-    quote: "Darkrise 提升了我们的转化率，并让 CLS 接近于零。",
+    quote: "ZHIOU 提升了我们的转化率，并让 CLS 接近于零。",
   },
 };
 

@@ -11,7 +11,7 @@
   <rect width="1200" height="630" fill="#0B0D12"/>
   <circle cx="300" cy="200" r="160" fill="url(#g)" filter="url(#blur)" opacity="0.4"/>
   <circle cx="900" cy="460" r="180" fill="url(#g)" filter="url(#blur)" opacity="0.35"/>
-  <text x="80" y="340" fill="#E6EAF2" font-size="72" font-family="Inter, ui-sans-serif, system-ui" font-weight="700">zhouzhiou · Darkrise</text>
+  <text x="80" y="340" fill="#E6EAF2" font-size="72" font-family="Inter, ui-sans-serif, system-ui" font-weight="700">zhouzhiou · ZHIOU</text>
   <text x="80" y="400" fill="#A9B0BE" font-size="28" font-family="Inter, ui-sans-serif, system-ui">Astro dark business theme for SaaS & analytics</text>
 <\/svg>
 

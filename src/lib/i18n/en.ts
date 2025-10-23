@@ -94,6 +94,6 @@ export const en: Namespaced = {
   testimonials: {
     title: "What customers say",
     role_cto: "CTO, Tech Co.",
-    quote: "Darkrise boosted our conversion and kept our CLS near zero.",
+    quote: "ZHIOU boosted our conversion and kept our CLS near zero.",
   },
 };
