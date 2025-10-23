@@ -110,6 +110,9 @@ export const zh: Namespaced = {
     acceptable: "请勿滥用、攻击或干扰本服务的正常运行。",
   },
   footer: {
+    col_content: "内容",
+    col_resources: "资源",
+    col_creative: "创作",
     col_about: "关于",
     col_product: "产品",
     col_support: "支持与服务",
@@ -143,4 +146,3 @@ export const zh: Namespaced = {
     tagline: "点亮灵感的每一束光。",
   },
 };
-
