@@ -80,7 +80,7 @@ export const en: Namespaced = {
     error_retry: "Please try again.",
   },
   product: { title: "Product", subtitle: "Capabilities and platform overview." },
-  blog: { title: "Blog", subtitle: "Latest writings and updates." },
+  blog: { title: "Blog", subtitle: "Latest writings and updates.", back_to_blog: "Back to Blog", empty: "No posts yet." },
   projects: { title: "Projects", subtitle: "Showcase of work and contributions." },
   notes: { title: "Notes", subtitle: "Reusable knowledge and cheat sheets." },
   videos: { title: "Videos", subtitle: "Product walkthroughs and demos." },

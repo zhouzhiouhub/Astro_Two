@@ -1,0 +1,232 @@
+---
+locale: zh
+slugBase: astro-keywords
+title: "Astro 关键词学习：核心概念与常用术语速览"
+description: "一文梳理 Astro 开发中的核心关键词：组件、岛屿架构、客户端指令、内容集合、动态路由、构建模式与中间件。"
+date: 2025-10-23
+tags: [astro, basics, guide]
+---
+
+# Astro 关键词学习指南（Cheat Sheet）
+
+面向入门与回顾，用最短时间扫清 Astro 的核心概念与高频术语，并附带小示例可即取即用。
+
+---
+
+## 1) Astro 组件（.astro）
+
+- 结构：前置脚本 Frontmatter（三划线之间）+ 模板（HTML）+ 样式
+- 数据传递：`Astro.props`
+- 插槽：`<slot />` 与具名插槽 `<slot name="..." />`
+
+```astro
+---
+const { title = 'Hello' } = Astro.props;
+---
+<h1>{title}</h1>
+<slot />
+
+<style>
+  h1 { font-weight: 600; }
+  :global(body) { margin: 0; }
+  /* :global 影响全局，其余样式默认作用于本组件范围 */
+}</style>
+```
+
+---
+
+## 2) 岛屿架构（Islands Architecture）
+
+默认输出静态 HTML，只在需要交互的组件上“点状”注水（hydrate）。
+
+— 优点：首屏快、JS 负载小、SEO 友好。
+
+---
+
+## 3) 客户端指令（client:xxx）
+
+为前端框架组件（React/Vue/Svelte 等）选择何时在客户端加载/注水：
+
+- `client:load` 页面加载后立即执行
+- `client:idle` 空闲时执行
+- `client:visible` 元素进入视口时执行
+- `client:media="(min-width: 768px)"` 媒体条件满足时
+- `client:only="react"` 仅在客户端渲染（无 SSR）
+
+```astro
+---
+import Counter from '../components/Counter.jsx';
+---
+<Counter client:visible />
+```
+
+---
+
+## 4) 路由与动态路由
+
+- 基于文件系统：`src/pages/xxx.astro` → `/xxx`
+- 动态参数：`src/pages/[slug].astro` → `/abc` 中 `Astro.params.slug === 'abc'`
+- 多段：`[lang]/blog/[slug].astro`
+
+```astro
+---
+export async function getStaticPaths() {
+  const slugs = ['a','b'];
+  return slugs.map((s) => ({ params: { slug: s } }));
+}
+
+const { slug } = Astro.params;
+---
+<h1>Post: {slug}</h1>
+```
+
+---
+
+## 5) Content Collections（`astro:content`）
+
+在 `src/content/` 中定义集合与校验 schema，类型安全地读取 Markdown/MDX。
+
+`src/content/config.ts`
+
+```ts
+import { defineCollection, z } from 'astro:content';
+
+const posts = defineCollection({
+  type: 'content',
+  schema: z.object({
+    locale: z.enum(['en','zh']),
+    slugBase: z.string(),
+    title: z.string(),
+    description: z.string().optional(),
+    date: z.string().or(z.date()),
+    tags: z.array(z.string()).default([]),
+  })
+});
+
+export const collections = { posts };
+```
+
+读取集合：
+
+```ts
+import { getCollection } from 'astro:content';
+const posts = await getCollection('posts');
+```
+
+— i18n 推荐：多语言文章保持相同 `slugBase`，用 `locale` 区分。
+
+---
+
+## 6) 构建模式与适配器
+
+- 输出模式：`output: 'static' | 'server'`（`astro.config.mjs`）
+- SSR 需选择适配器（Adapter）：如 Vercel/Netlify/Node/Deno 等
+
+```js
+// astro.config.mjs
+import { defineConfig } from 'astro/config';
+import vercel from '@astrojs/vercel/serverless';
+
+export default defineConfig({
+  output: 'server',
+  adapter: vercel(),
+});
+```
+
+---
+
+## 7) Endpoints / API 路由
+
+在 `src/pages/api/*.ts` 下导出 `GET/POST` 处理器返回 `Response`。
+
+```ts
+// src/pages/api/hello.ts
+export async function GET() {
+  return new Response(JSON.stringify({ ok: true }), {
+    headers: { 'content-type': 'application/json' }
+  });
+}
+```
+
+---
+
+## 8) 中间件（`src/middleware.ts`）
+
+在请求进入路由前统一处理：重定向、鉴权、注入公共头信息等。
+
+```ts
+// src/middleware.ts
+import type { MiddlewareHandler } from 'astro';
+
+export const onRequest: MiddlewareHandler = async (context, next) => {
+  // 例：简单语言前缀兜底
+  const url = new URL(context.request.url);
+  if (url.pathname === '/') {
+    return Response.redirect(url.origin + '/en/', 307);
+  }
+  return next();
+};
+```
+
+---
+
+## 9) 资源与图片（`astro:assets`）
+
+内置图片优化与 `<Image />` 组件，开发阶段即获尺寸/格式优化（需 Astro 4+）。
+
+```astro
+---
+import { Image } from 'astro:assets';
+import hero from '../assets/hero.png';
+---
+<Image src={hero} alt="Hero" widths={[400, 800]} formats={["avif","webp","png"]} />
+```
+
+---
+
+## 10) 环境变量（`import.meta.env`）
+
+在 `.env` 或部署平台中注入，使用 `import.meta.env.PUBLIC_*` 暴露给客户端。
+
+```ts
+const apiBase = import.meta.env.PUBLIC_API_BASE;
+```
+
+---
+
+## 实战组合：多语言博客路由（思路）
+
+1. 每种语言各写一篇文章：`locale: zh/en`，共享 `slugBase`
+2. 列表页 `/[lang]/blog` 通过 `getCollection('posts')` 过滤 `locale`
+3. 详情页 `/[lang]/blog/[slug]` 用 `slugBase + locale` 精确匹配文章
+
+路由示例（节选）：
+
+```astro
+---
+// src/pages/[lang]/blog/[slug].astro
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((p) => ({ params: { lang: p.data.locale, slug: p.data.slugBase } }));
+}
+
+const { lang, slug } = Astro.params;
+const all = await getCollection('posts');
+const entry = all.find((p) => p.data.slugBase === slug && p.data.locale === lang);
+const { Content } = await entry!.render();
+---
+<article><Content /></article>
+```
+
+---
+
+## 进一步学习建议
+
+- 官方文档：快速上手、组件语法、框架整合（Integrations）
+- 优先掌握：客户端指令、动态路由、Content Collections 与构建模式
+- 随手做卡片/笔记：把高频关键词与最小示例记录在案，便于复用
+
+— 作者：ZhouZhiOu
+

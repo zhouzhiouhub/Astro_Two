@@ -77,7 +77,7 @@ export const zh: Namespaced = {
     error_retry: "请重试。",
   },
   product: { title: "产品", subtitle: "能力与平台总览。" },
-  blog: { title: "博客", subtitle: "最新文章与更新。" },
+  blog: { title: "博客", subtitle: "最新文章与更新。", back_to_blog: "返回博客" },
   projects: { title: "项目", subtitle: "作品与贡献展示。" },
   notes: { title: "笔记", subtitle: "可复用的知识与备忘。" },
   videos: { title: "视频", subtitle: "产品演示与讲解。" },

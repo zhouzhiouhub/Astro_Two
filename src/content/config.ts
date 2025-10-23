@@ -9,7 +9,20 @@ const faq = defineCollection({
   })
 });
 
+// Blog posts collection with simple locale-aware schema
+const posts = defineCollection({
+  type: 'content',
+  schema: z.object({
+    locale: z.enum(['en','zh']),
+    slugBase: z.string(),
+    title: z.string(),
+    description: z.string().optional(),
+    date: z.string().or(z.date()),
+    tags: z.array(z.string()).default([]),
+  })
+});
+
 export const collections = {
   faq,
+  posts,
 };
-

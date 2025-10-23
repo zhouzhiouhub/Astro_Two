@@ -1,0 +1,44 @@
+---
+import Base from "@/layouts/BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import SearchButton from "@/components/SearchButton.astro";
+import { isLocale, type Locale, t } from "@/lib/i18n";
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((p) => ({ params: { lang: p.data.locale, slug: p.data.slugBase } }));
+}
+export const prerender = true;
+
+const { lang, slug } = Astro.params as { lang: Locale, slug: string };
+if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }
+
+const all = await getCollection('posts');
+const entry = all.find((p) => p.data.slugBase === slug && p.data.locale === lang);
+if (!entry) { throw new Error("Post not found"); }
+const { Content } = await entry.render();
+const title = entry.data.title;
+const desc = entry.data.description ?? '';
+const url = Astro.url.href;
+const dateVal = entry.data.date;
+const date = typeof dateVal === 'string' ? dateVal : new Date(dateVal).toISOString().slice(0,10);
+---
+<Base title={title} desc={desc} url={url} lang={lang}>
+  <Header lang={lang} />
+  <main class="container py-12">
+    <div class="mb-4 flex justify-between items-center">
+      <a href={`/${lang}/blog`} class="text-sm text-[var(--color-muted)] hover:text-[var(--color-fg)]">← {t('blog','back_to_blog', lang)}</a>
+      <SearchButton lang={lang} />
+    </div>
+
+    <article class="prose prose-neutral max-w-none dark:prose-invert">
+      <h1>{title}</h1>
+      <p class="mt-0 text-[var(--color-muted)] text-sm">{date}</p>
+      <Content />
+    </article>
+
+    <Footer lang={lang} />
+  </main>
+</Base>
