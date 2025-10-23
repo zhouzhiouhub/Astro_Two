@@ -81,7 +81,7 @@ const links = [
       <ul class="mt-4 space-y-2 text-[var(--color-muted)] leading-7">
         <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}`}>{t('footer','home', lang)}</a></li>
         <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/blog`}>{t('footer','all_posts', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href="#">{t('footer','categories_tags', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/categories-tags`}>{t('footer','categories_tags', lang)}</a></li>
         <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/projects`}>{t('footer','projects', lang)}</a></li>
       </ul>
     </div>
@@ -91,9 +91,9 @@ const links = [
       <div class="text-[var(--color-fg)] font-semibold text-lg">{t('footer','col_creative', lang)}</div>
       <ul class="mt-4 space-y-2 text-[var(--color-muted)] leading-7">
         <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/notes`}>{t('footer','notes_ideas', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href="#">{t('footer','essays_inspirations', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href="#">{t('footer','research_experiments', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href="#">{t('footer','writing_archive', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/essays`}>{t('footer','essays_inspirations', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/research`}>{t('footer','research_experiments', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/archive`}>{t('footer','writing_archive', lang)}</a></li>
       </ul>
     </div>
 
@@ -102,9 +102,9 @@ const links = [
       <div class="text-[var(--color-fg)] font-semibold text-lg">{t('footer','col_resources', lang)}</div>
       <ul class="mt-4 space-y-2 text-[var(--color-muted)] leading-7">
         <li><a class="hover:text-[var(--color-fg)]" href="/rss.xml" target="_blank" rel="noopener noreferrer">{t('footer','rss', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href="#">{t('footer','blogroll', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href="#">{t('footer','references', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href="#">{t('footer','opensource', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/blogroll`}>{t('footer','blogroll', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/references`}>{t('footer','references', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/opensource`}>{t('footer','opensource', lang)}</a></li>
       </ul>
     </div>
   </div>
