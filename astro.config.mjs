@@ -6,6 +6,9 @@ import node from '@astrojs/node';
 
 export default defineConfig({
   site: 'https://example.com',
+  alias: {
+    '@': './src',
+  },
   integrations: [
     react(),
     tailwind({ applyBaseStyles: false }),
@@ -15,4 +18,3 @@ export default defineConfig({
   output: 'server',
   prefetch: true,
 });
-

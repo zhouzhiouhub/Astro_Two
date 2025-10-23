@@ -1,7 +1,9 @@
 ---
+import { t, type Locale } from "@/lib/i18n";
+const { lang = 'en' } = Astro.props as { lang: Locale };
 ---
 <section class="container py-16">
-  <h2 class="text-2xl font-semibold mb-6">What customers say</h2>
+  <h2 class="text-2xl font-semibold mb-6">{t('testimonials','title', lang)}</h2>
   <div class="overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none]" style="scrollbar-width:none;">
     <div class="flex gap-4 snap-x snap-mandatory">
       {Array.from({ length: 6 }).map((_, i) => (
@@ -9,15 +11,16 @@
           <div class="flex items-center gap-3">
             <div class="h-8 w-8 rounded-full bg-white/10"></div>
             <figcaption class="text-sm">
-              <div class="font-medium">Alex {i+1}</div>
-              <div class="text-[var(--color-muted)]">CTO, Tech Co.</div>
+              <div class="font-medium">Alex {i + 1}</div>
+              <div class="text-[var(--color-muted)]">{t('testimonials','role_cto', lang)}</div>
             </figcaption>
           </div>
           <blockquote class="mt-4 text-sm text-[var(--color-muted)]">
-            “Darkrise boosted our conversion and kept our CLS near zero.”
+            “{t('testimonials','quote', lang)}”
           </blockquote>
         </figure>
       ))}
     </div>
   </div>
 </section>
+

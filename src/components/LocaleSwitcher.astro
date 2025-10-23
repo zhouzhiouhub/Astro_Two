@@ -1,6 +1,6 @@
 ---
 import type { Locale } from "@/lib/i18n";
-import { pathWithLocale } from "@/lib/i18n";
+import { pathWithLocale, t } from "@/lib/i18n";
 const { lang = 'en', path = '/' } = Astro.props as { lang: Locale; path?: string };
 ---
 <div class="relative">
@@ -11,7 +11,7 @@ const { lang = 'en', path = '/' } = Astro.props as { lang: Locale; path?: string
     aria-expanded="false"
     class="inline-flex items-center gap-1 text-sm text-[var(--color-muted)] hover:text-[var(--color-fg)]"
   >
-    {lang === 'zh' ? '中文' : 'EN'}
+    {lang === 'zh' ? t('common','lang_zh', 'zh') : t('common','lang_en', 'en')}
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
     </svg>
@@ -29,7 +29,7 @@ const { lang = 'en', path = '/' } = Astro.props as { lang: Locale; path?: string
         class={`block rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5 ${lang==='en' ? 'text-[var(--color-fg)]' : 'text-[var(--color-muted)]'}`}
         role="menuitem"
       >
-        English
+        {t('common','lang_en', 'en')}
       </a>
     </li>
     <li>
@@ -38,7 +38,7 @@ const { lang = 'en', path = '/' } = Astro.props as { lang: Locale; path?: string
         class={`block rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5 ${lang==='zh' ? 'text-[var(--color-fg)]' : 'text-[var(--color-muted)]'}`}
         role="menuitem"
       >
-        中文
+        {t('common','lang_zh', 'zh')}
       </a>
     </li>
   </ul>

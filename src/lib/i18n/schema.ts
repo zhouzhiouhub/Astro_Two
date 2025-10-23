@@ -13,7 +13,7 @@ export type Namespaced = Record<
   | "download"
   | "blog"
   | "projects"
-  | "notes",
+  | "notes"
+  | "testimonials",
   Dict
 >;
-

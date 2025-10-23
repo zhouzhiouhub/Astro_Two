@@ -4,7 +4,7 @@ import { zh } from "./zh";
 
 export const SUPPORTED_LOCALES = ["en", "zh"] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
-export const defaultLocale: Locale = "en";
+export const defaultLocale: Locale = "zh";
 
 const dict: Record<Locale, Namespaced> = { en, zh };
 
@@ -27,3 +27,30 @@ export function pathWithLocale(locale: Locale, path = "/") {
   return "/" + parts.join("/");
 }
 
+/**
+ * Very small Accept-Language negotiator for our supported locales.
+ * Returns best match or `defaultLocale`.
+ */
+export function negotiateLocale(al: string | null | undefined): Locale {
+  const header = (al || "").toLowerCase();
+  // parse e.g. "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7"
+  const items = header
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((part) => {
+      const [tag, qPart] = part.split(";");
+      const q = qPart?.startsWith("q=") ? Number(qPart.slice(2)) : 1;
+      return { tag: tag || "", q: Number.isFinite(q) ? q : 0 } as const;
+    })
+    .sort((a, b) => b.q - a.q);
+
+  for (const { tag } of items) {
+    // direct match (en, zh)
+    if (isLocale(tag)) return tag;
+    // primary subtag match (en-US -> en, zh-CN -> zh)
+    const primary = tag.split("-")[0];
+    if (primary && isLocale(primary)) return primary;
+  }
+  return defaultLocale;
+}

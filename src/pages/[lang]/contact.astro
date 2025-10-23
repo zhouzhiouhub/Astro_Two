@@ -23,33 +23,33 @@ const e = Astro.url.searchParams.get('e');
 
     {sent && (
       <div id="sent-alert" role="status" class="mt-4 rounded-lg border border-green-800/40 bg-green-900/20 text-green-200 px-4 py-3">
-        Message sent successfully.
+        {t('contact','sent_success', lang)}
       </div>
     )}
     {error && (
       <div class="mt-4 rounded-lg border border-red-800/40 bg-red-900/20 text-red-200 px-4 py-3">
-        Failed to send message. {e === 'val' && 'Please fill the form correctly (message ≥ 5 chars).'}
-        {e === 'auth' && 'Auth failed. Check MAIL_USER/MAIL_PASS.'}
-        {e === 'conn' && 'Connection failed. Check network/port 465.'}
-        {!e && 'Please try again.'}
+        {t('contact','error_failed', lang)} {e === 'val' && t('contact','error_val', lang)}
+        {e === 'auth' && t('contact','error_auth', lang)}
+        {e === 'conn' && t('contact','error_conn', lang)}
+        {!e && t('contact','error_retry', lang)}
       </div>
     )}
 
     <form class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 card p-6" method="post" action={`/api/contact?lang=${lang}`}>
       <label class="text-sm">
-        <span>Name</span>
+        <span>{t('contact','form_name', lang)}</span>
         <input class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" name="name" required minlength="1" maxlength="100" />
       </label>
       <label class="text-sm">
-        <span>Email</span>
+        <span>{t('contact','form_email', lang)}</span>
         <input class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" type="email" name="email" required maxlength="254" />
       </label>
       <label class="text-sm md:col-span-2">
-        <span>Message</span>
-        <textarea class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" name="message" rows="4" required minlength="5" maxlength="5000" placeholder="Please enter at least 5 characters"></textarea>
+        <span>{t('contact','form_message', lang)}</span>
+        <textarea class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" name="message" rows="4" required minlength="5" maxlength="5000" placeholder={t('contact','form_message_placeholder', lang)}></textarea>
       </label>
       <div class="md:col-span-2">
-        <button class="btn btn-primary">Send</button>
+        <button class="btn btn-primary">{t('contact','send', lang)}</button>
       </div>
     </form>
 
@@ -75,3 +75,4 @@ const e = Astro.url.searchParams.get('e');
     })();
   </script>
 </Base>
+
