@@ -34,7 +34,7 @@ export const zh: Namespaced = {
   pricing: {
     title: "定价",
     subtitle: "简单、透明、可扩展。",
-    billing_toggle_aria: "切换计费周期",
+    billing_toggle_aria: "切换计费",
     monthly: "按月",
     yearly: "按年",
     save_20: "省 20%",
@@ -53,7 +53,7 @@ export const zh: Namespaced = {
     support_email: "邮件支持",
     support_priority: "优先支持",
     analytics_advanced: "高级分析",
-    sso_audit: "单点登录与审计日志",
+    sso_audit: "SSO 与审计日志",
     contact_sales: "联系销售",
     most_popular: "最受欢迎",
   },
@@ -82,7 +82,14 @@ export const zh: Namespaced = {
   notes: { title: "笔记", subtitle: "可复用的知识与备忘。" },
   videos: { title: "视频", subtitle: "产品演示与讲解。" },
   faq: { title: "常见问题", subtitle: "对常见问题的解答。" },
-  about: { title: "关于", subtitle: "我们的使命与故事。" },
+  about: {
+    title: "关于",
+    subtitle: "我们的使命与故事。",
+    mission_title: "使命",
+    mission_text: "打造可靠、面向未来的分析类 UI。",
+    values_title: "价值观",
+    values_text: "性能、可访问性与清晰表达。",
+  },
   download: { title: "下载", subtitle: "获取安装包与资源。" },
   testimonials: {
     title: "客户怎么说",

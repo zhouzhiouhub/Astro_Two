@@ -82,7 +82,14 @@ export const en: Namespaced = {
   notes: { title: "Notes", subtitle: "Reusable knowledge and cheat sheets." },
   videos: { title: "Videos", subtitle: "Product walkthroughs and demos." },
   faq: { title: "FAQ", subtitle: "Answers to common questions." },
-  about: { title: "About", subtitle: "Our mission and story." },
+  about: {
+    title: "About",
+    subtitle: "Our mission and story.",
+    mission_title: "Mission",
+    mission_text: "Build reliable, future-facing analytics UI.",
+    values_title: "Values",
+    values_text: "Performance, accessibility, and clarity.",
+  },
   download: { title: "Download", subtitle: "Get installers and resources." },
   testimonials: {
     title: "What customers say",
