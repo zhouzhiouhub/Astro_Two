@@ -14,6 +14,9 @@ export type Namespaced = Record<
   | "blog"
   | "projects"
   | "notes"
-  | "testimonials",
+  | "testimonials"
+  | "privacy"
+  | "terms"
+  | "footer",
   Dict
 >;

@@ -25,6 +25,9 @@ export const zh: Namespaced = {
     sr_home: "首页",
     search: "搜索",
     toggle_theme: "切换主题",
+    privacy: "隐私政策",
+    terms: "条款与条件",
+    icp_label: "ICP备案",
   },
   home: {
     badge: "获奖的高转化主题",
@@ -94,7 +97,20 @@ export const zh: Namespaced = {
   testimonials: {
     title: "客户怎么说",
     role_cto: "技术公司 CTO",
-    quote: "ZHIOU 提升了我们的转化率，并让 CLS 接近于零。",
+    quote: "Darkrise 提升了我们的转化率，并让 CLS 接近于零。",
+  },
+  privacy: {
+    title: "隐私政策",
+    intro: "我们尊重您的隐私，仅收集运营与改进本站所必需的数据。",
+    collect: "我们可能收集：您提交的联系方式，以及基础的站点分析数据。",
+    usage: "用途：用于回复您的消息，并改进站点内容与体验。",
+    contact: "如有疑问，请通过“联系”页面与我们取得联系。",
+  },
+  terms: {
+    title: "条款与条件",
+    intro: "使用本站即表示您同意遵守相关法律法规以及我们的合理使用规则。",
+    license: "本站内容按“现状”提供，不作任何明示或暗示的保证。",
+    acceptable: "请勿滥用、攻击或干扰本服务的正常运行。",
   },
 };
 

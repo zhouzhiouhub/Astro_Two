@@ -8,6 +8,7 @@ interface ImportMetaEnv {
   readonly AUTH_ISSUED_AT?: string; // e.g. 2025-01-01T00:00:00Z
   readonly AUTH_VALID_DAYS?: string; // e.g. "180"
   readonly ALERT_DAYS?: string; // e.g. "14,7,3,1,0,-1"
+  readonly SITE_ICP?: string; // e.g. 京ICP备12345678号-1
 }
 interface ImportMeta {
   readonly env: ImportMetaEnv;
