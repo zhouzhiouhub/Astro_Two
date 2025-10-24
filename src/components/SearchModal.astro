@@ -67,12 +67,13 @@ const { lang } = Astro.props as { lang: Locale };
 
   function openSearch(currentLang){ showOverlay(); ensurePagefindUI(currentLang); }
 
-  window.addEventListener('open-search', (e)=>{
-    const detail = (e as CustomEvent).detail || {};
+  // Listen for the custom event dispatched by SearchButton
+  // Avoid TypeScript-only casts in client JS
+  window.addEventListener('open-search', (ev) => {
+    const detail = (ev && typeof ev === 'object' && 'detail' in ev && ev.detail) ? ev.detail : {};
     openSearch(detail.lang || 'en');
   });
   closeBtn?.addEventListener('click', hideOverlay);
   backdrop?.addEventListener('click', hideOverlay);
   window.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') hideOverlay(); });
 </script>
-

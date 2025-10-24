@@ -9,10 +9,10 @@ const { lang = 'en', path = '/' } = Astro.props as { lang: Locale; path?: string
     id="lang-btn"
     aria-haspopup="menu"
     aria-expanded="false"
-    class="inline-flex items-center gap-1 text-sm text-[var(--color-muted)] hover:text-[var(--color-fg)]"
+    class="inline-flex items-center gap-1.5 h-10 px-3 leading-none rounded-md text-[15px] lg:text-[17px] font-medium text-[var(--color-muted)] hover:text-[var(--color-fg)] hover:bg-black/5 dark:hover:bg-white/5"
   >
     {lang === 'zh' ? t('common','lang_zh', 'zh') : t('common','lang_en', 'en')}
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
     </svg>
   </button>
@@ -21,12 +21,12 @@ const { lang = 'en', path = '/' } = Astro.props as { lang: Locale; path?: string
     id="lang-menu"
     role="menu"
     aria-labelledby="lang-btn"
-    class="invisible opacity-0 pointer-events-none z-20 absolute right-0 mt-2 min-w-[140px] rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-1 text-sm transition shadow-sm dark:shadow-glow"
+    class="invisible opacity-0 pointer-events-none z-20 absolute right-0 mt-2 min-w-[160px] rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-2 text-[15px] transition shadow-sm dark:shadow-glow"
   >
     <li>
       <a
         href={pathWithLocale('en', path)}
-        class={`block rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5 ${lang==='en' ? 'text-[var(--color-fg)]' : 'text-[var(--color-muted)]'}`}
+        class={`block rounded px-4 py-2.5 font-medium hover:bg-black/5 dark:hover:bg-white/5 ${lang==='en' ? 'text-[var(--color-fg)]' : 'text-[var(--color-muted)]'}`}
         role="menuitem"
       >
         {t('common','lang_en', 'en')}
@@ -35,7 +35,7 @@ const { lang = 'en', path = '/' } = Astro.props as { lang: Locale; path?: string
     <li>
       <a
         href={pathWithLocale('zh', path)}
-        class={`block rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5 ${lang==='zh' ? 'text-[var(--color-fg)]' : 'text-[var(--color-muted)]'}`}
+        class={`block rounded px-4 py-2.5 font-medium hover:bg-black/5 dark:hover:bg-white/5 ${lang==='zh' ? 'text-[var(--color-fg)]' : 'text-[var(--color-muted)]'}`}
         role="menuitem"
       >
         {t('common','lang_zh', 'zh')}
@@ -62,4 +62,3 @@ const { lang = 'en', path = '/' } = Astro.props as { lang: Locale; path?: string
     window.addEventListener('click', (e)=>{ if(menu && menu.contains(e.target)) return; shown=false; open(false); });
   </script>
 </div>
-

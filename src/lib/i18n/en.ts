@@ -145,7 +145,7 @@ export const en: Namespaced = {
     media_expo: "Expo",
     media_videos: "Videos",
     media_blog: "Blog",
-    connect: "Stay connected with us",
-    tagline: "Ignite every spark of inspiration.",
+    connect: "Stay brilliantly connected with us.",
+    tagline: "Document thoughts, illuminate every spark of creation.",
   },
 };

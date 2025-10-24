@@ -142,7 +142,7 @@ export const zh: Namespaced = {
     media_expo: "展会",
     media_videos: "视频",
     media_blog: "博客",
-    connect: "与我们保持光的连接",
-    tagline: "点亮灵感的每一束光。",
+    connect: "与我们保持灵光的连接。",
+    tagline: "记录思考，点亮创造的每一束光。",
   },
 };

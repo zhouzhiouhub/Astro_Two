@@ -3,50 +3,71 @@ import { t, type Locale, pathWithLocale } from "@/lib/i18n";
 import LocaleSwitcher from "./LocaleSwitcher.astro";
 const { lang } = Astro.props as { lang: Locale };
 const currentPath = Astro.url.pathname;
+const base = `/${lang}`;
+const isHomeActive = currentPath === base || currentPath === `${base}/`;
+const isActive = (p) => currentPath === p || currentPath.startsWith(p + '/');
+const blogPath = `${base}/blog`;
+const projectsPath = `${base}/projects`;
+const notesPath = `${base}/notes`;
+const aboutPath = `${base}/about`;
+const contactPath = `${base}/contact`;
 ---
-<header class="container relative z-50 flex items-center justify-between py-6">
+<div id="site-header" class="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg)] backdrop-blur transition-transform duration-300 ease-out will-change-transform">
+<header class="container relative flex items-center justify-between py-6">
   <a href={`/${lang}`} class="flex items-center gap-2">
     <img src="/logo.svg" alt="zhouzhiou" width="28" height="28"/>
     <span class="sr-only">{t('common','sr_home', lang)}</span>
   </a>
-  <nav class="hidden md:flex items-center gap-8 text-sm text-[var(--color-muted)]">
-    <a href={`/${lang}`}>{t('common','nav_home', lang)}</a>
-    <a href={`/${lang}/blog`}>{t('common','nav_blog', lang)}</a>
-    <a href={`/${lang}/projects`}>{t('common','nav_projects', lang)}</a>
-    <a href={`/${lang}/notes`}>{t('common','nav_notes', lang)}</a>
-    <a href={`/${lang}/about`}>{t('common','nav_about', lang)}</a>
-    <a href={`/${lang}/contact`}>{t('common','nav_contact', lang)}</a>
+  <nav class="hidden md:flex items-center gap-10 lg:gap-12 text-[15px] lg:text-[17px] text-[var(--color-muted)] font-medium">
+    <a aria-current={isHomeActive ? 'page' : undefined}
+       class={`inline-flex h-10 items-center rounded-md px-3 leading-none border-b-2 border-transparent hover:text-[var(--color-fg)] hover:border-[var(--color-primary)] ${isHomeActive ? 'text-[var(--color-fg)] font-semibold border-[var(--color-primary)]' : ''}`}
+       href={`/${lang}`}>{t('common','nav_home', lang)}</a>
+    <a aria-current={isActive(blogPath) ? 'page' : undefined}
+       class={`inline-flex h-10 items-center rounded-md px-3 leading-none border-b-2 border-transparent hover:text-[var(--color-fg)] hover:border-[var(--color-primary)] ${isActive(blogPath) ? 'text-[var(--color-fg)] font-semibold border-[var(--color-primary)]' : ''}`}
+       href={blogPath}>{t('common','nav_blog', lang)}</a>
+    <a aria-current={isActive(projectsPath) ? 'page' : undefined}
+       class={`inline-flex h-10 items-center rounded-md px-3 leading-none border-b-2 border-transparent hover:text-[var(--color-fg)] hover:border-[var(--color-primary)] ${isActive(projectsPath) ? 'text-[var(--color-fg)] font-semibold border-[var(--color-primary)]' : ''}`}
+       href={projectsPath}>{t('common','nav_projects', lang)}</a>
+    <a aria-current={isActive(notesPath) ? 'page' : undefined}
+       class={`inline-flex h-10 items-center rounded-md px-3 leading-none border-b-2 border-transparent hover:text-[var(--color-fg)] hover:border-[var(--color-primary)] ${isActive(notesPath) ? 'text-[var(--color-fg)] font-semibold border-[var(--color-primary)]' : ''}`}
+       href={notesPath}>{t('common','nav_notes', lang)}</a>
+    <a aria-current={isActive(aboutPath) ? 'page' : undefined}
+       class={`inline-flex h-10 items-center rounded-md px-3 leading-none border-b-2 border-transparent hover:text-[var(--color-fg)] hover:border-[var(--color-primary)] ${isActive(aboutPath) ? 'text-[var(--color-fg)] font-semibold border-[var(--color-primary)]' : ''}`}
+       href={aboutPath}>{t('common','nav_about', lang)}</a>
+    <a aria-current={isActive(contactPath) ? 'page' : undefined}
+       class={`inline-flex h-10 items-center rounded-md px-3 leading-none border-b-2 border-transparent hover:text-[var(--color-fg)] hover:border-[var(--color-primary)] ${isActive(contactPath) ? 'text-[var(--color-fg)] font-semibold border-[var(--color-primary)]' : ''}`}
+       href={contactPath}>{t('common','nav_contact', lang)}</a>
 
     <!-- Right side icons -->
     <!-- search icon removed per request -->
     <LocaleSwitcher lang={lang} path={Astro.url.pathname} />
-    <button aria-label={t('common','toggle_theme', lang)} id="theme-toggle" class="text-lg hover:text-[var(--color-fg)] flex items-center justify-center w-6 h-6">
+    <button aria-label={t('common','toggle_theme', lang)} id="theme-toggle" class="inline-flex items-center justify-center w-10 h-10 rounded-md text-[var(--color-muted)] hover:text-[var(--color-fg)] hover:bg-black/5 dark:hover:bg-white/5">
       <!-- Sun icon -->
-      <svg id="icon-sun" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2m11-11h-2M3 12H1m16.95 6.95l-1.414-1.414M6.464 6.464 5.05 5.05m12.9 0-1.414 1.414M6.464 17.536 5.05 18.95"/></svg>
+      <svg id="icon-sun" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2m11-11h-2M3 12H1m16.95 6.95l-1.414-1.414M6.464 6.464 5.05 5.05m12.9 0-1.414 1.414M6.464 17.536 5.05 18.95"/></svg>
       <!-- Moon icon -->
-      <svg id="icon-moon" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 0111.21 3 7 7 0 1019 12.79z"/></svg>
+      <svg id="icon-moon" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 0111.21 3 7 7 0 1019 12.79z"/></svg>
     </button>
   </nav>
 
   <!-- Mobile actions: theme + hamburger -->
   <div class="md:hidden flex items-center gap-3">
-    <button aria-label={t('common','toggle_theme', lang)} id="theme-toggle-2" class="text-lg hover:text-[var(--color-fg)] flex items-center justify-center w-6 h-6">
-      <svg id="icon-sun-2" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2m11-11h-2M3 12H1m16.95 6.95l-1.414-1.414M6.464 6.464 5.05 5.05m12.9 0-1.414 1.414M6.464 17.536 5.05 18.95"/></svg>
-      <svg id="icon-moon-2" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 0111.21 3 7 7 0 1019 12.79z"/></svg>
+    <button aria-label={t('common','toggle_theme', lang)} id="theme-toggle-2" class="inline-flex items-center justify-center w-10 h-10 rounded-md text-[var(--color-muted)] hover:text-[var(--color-fg)] hover:bg-black/5 dark:hover:bg-white/5">
+      <svg id="icon-sun-2" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2m11-11h-2M3 12H1m16.95 6.95l-1.414-1.414M6.464 6.464 5.05 5.05m12.9 0-1.414 1.414M6.464 17.536 5.05 18.95"/></svg>
+      <svg id="icon-moon-2" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 0111.21 3 7 7 0 1019 12.79z"/></svg>
     </button>
-    <button id="menu-toggle" aria-haspopup="menu" aria-expanded="false" aria-label={t('common','nav_all_pages', lang)} class="inline-flex items-center justify-center w-8 h-8 rounded hover:bg-black/5 dark:hover:bg-white/5">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    <button id="menu-toggle" aria-haspopup="menu" aria-expanded="false" aria-label={t('common','nav_all_pages', lang)} class="inline-flex items-center justify-center w-10 h-10 rounded-md text-[var(--color-muted)] hover:text-[var(--color-fg)] hover:bg-black/5 dark:hover:bg-white/5">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
     </button>
   </div>
 
   <!-- Mobile menu panel -->
-  <div id="mobile-menu" role="menu" aria-labelledby="menu-toggle" class="md:hidden hidden absolute right-0 top-full mt-2 min-w-[200px] rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-2 text-sm shadow-sm dark:shadow-glow z-50">
-    <a class="block rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}`}>{t('common','nav_home', lang)}</a>
-    <a class="block rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}/blog`}>{t('common','nav_blog', lang)}</a>
-    <a class="block rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}/projects`}>{t('common','nav_projects', lang)}</a>
-    <a class="block rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}/notes`}>{t('common','nav_notes', lang)}</a>
-    <a class="block rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}/about`}>{t('common','nav_about', lang)}</a>
-    <a class="block rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}/contact`}>{t('common','nav_contact', lang)}</a>
+  <div id="mobile-menu" role="menu" aria-labelledby="menu-toggle" class="md:hidden hidden absolute right-0 top-full mt-2 min-w-[220px] rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-2 text-sm shadow-sm dark:shadow-glow z-50">
+    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}`}>{t('common','nav_home', lang)}</a>
+    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}/blog`}>{t('common','nav_blog', lang)}</a>
+    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}/projects`}>{t('common','nav_projects', lang)}</a>
+    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}/notes`}>{t('common','nav_notes', lang)}</a>
+    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}/about`}>{t('common','nav_about', lang)}</a>
+    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}/contact`}>{t('common','nav_contact', lang)}</a>
     <div class="my-1 border-t border-[var(--color-border)]"></div>
     <div class="px-3 py-1 text-[var(--color-muted)]">Language</div>
     <div class="flex gap-1 px-2 pb-2">
@@ -119,4 +140,46 @@ const currentPath = Astro.url.pathname;
     window.addEventListener('click', ()=>{ shown=false; openMenu(false); });
 
     // Search shortcuts moved to SearchButton to limit to article pages only
+
+    // Hide-on-scroll-down, show-on-scroll-up behavior
+    const headerEl = document.getElementById('site-header');
+    let lastY = window.scrollY || 0;
+    let ticking = false;
+    const delta = 6; // minimal scroll diff to trigger
+
+    function onScrollDirUpdate(y){
+      if(!headerEl) return;
+      // Keep visible at very top
+      if(y <= 8){
+        headerEl.classList.remove('-translate-y-full');
+        lastY = y;
+        return;
+      }
+      const diff = y - lastY;
+      if (Math.abs(diff) < delta) return;
+      // Don't hide while mobile menu is open
+      if (shown) {
+        headerEl.classList.remove('-translate-y-full');
+        lastY = y;
+        return;
+      }
+      if (diff > 0) {
+        // scrolling down -> hide
+        headerEl.classList.add('-translate-y-full');
+      } else {
+        // scrolling up -> show
+        headerEl.classList.remove('-translate-y-full');
+      }
+      lastY = y;
+    }
+
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY || 0;
+      if(!ticking){
+        window.requestAnimationFrame(()=>{ onScrollDirUpdate(y); ticking=false; });
+        ticking = true;
+      }
+    }, { passive: true });
   </script>
+</header>
+</div>
