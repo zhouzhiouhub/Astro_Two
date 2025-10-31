@@ -2,14 +2,11 @@
 import Badge from "./Badge.astro";
 import CTA from "./CTA.astro";
 import type { HomeHighlight } from "@/data/home";
-import heroCodeImg from "@/../public/og/hero-code.svg?url";
-import heroDesignImg from "@/../public/og/hero-design.svg?url";
-import heroHardwareImg from "@/../public/og/hero-hardware.svg?url";
 
 const imageMap = {
-  heroCode: heroCodeImg,
-  heroDesign: heroDesignImg,
-  heroHardware: heroHardwareImg,
+  heroCode: "/og/hero-code.svg",
+  heroDesign: "/og/hero-design.svg",
+  heroHardware: "/og/hero-hardware.svg",
 } as const;
 
 interface Props {
