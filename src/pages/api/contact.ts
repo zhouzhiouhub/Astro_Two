@@ -22,6 +22,10 @@ export const POST: APIRoute = async ({ request, url }) => {
     } else {
       payload = await request.json().catch(() => ({}));
     }
+    const honeypot = typeof payload.website === 'string' ? payload.website.trim() : '';
+    if (honeypot) {
+      return new Response(null, { status: 204 });
+    }
     const data = schema.parse(payload);
 
     const host = url.origin;

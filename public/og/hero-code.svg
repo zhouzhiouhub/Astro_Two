@@ -1,0 +1,63 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#121826" />
+      <stop offset="1" stop-color="#1F2940" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5B8CFF" />
+      <stop offset="1" stop-color="#AA5BFF" />
+    </linearGradient>
+    <filter id="shadow" x="-50" y="-50" width="1300" height="900" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="30" stdDeviation="60" flood-color="#000000" flood-opacity="0.35" />
+    </filter>
+  </defs>
+  <rect width="1200" height="800" rx="32" fill="url(#bg)" />
+  <g filter="url(#shadow)">
+    <rect x="120" y="120" width="520" height="360" rx="24" fill="#0F172A" stroke="#1F2A44" stroke-width="2" />
+    <rect x="150" y="160" width="460" height="40" rx="12" fill="#151F34" />
+    <circle cx="176" cy="180" r="8" fill="#FF5F56" />
+    <circle cx="204" cy="180" r="8" fill="#FFBD2E" />
+    <circle cx="232" cy="180" r="8" fill="#27C93F" />
+    <g transform="translate(150 220)" font-family="'JetBrains Mono', 'Fira Code', monospace" font-size="20" letter-spacing="0.02em">
+      <text fill="#7383A7">1</text>
+      <text x="36" fill="#5B8CFF">import</text>
+      <text x="124" fill="#D0D7EA">{</text>
+      <text x="148" fill="#AA5BFF"> defineConfig </text>
+      <text x="320" fill="#D0D7EA">}</text>
+      <text x="348" fill="#5B8CFF">from</text>
+      <text x="428" fill="#9CA9C8">"astro/config"</text>
+      <text x="570" fill="#D0D7EA">;</text>
+      <text y="36" fill="#7383A7">2</text>
+      <text x="36" y="36" fill="#5B8CFF">import</text>
+      <text x="124" y="36" fill="#9CA9C8">tailwind</text>
+      <text x="220" y="36" fill="#D0D7EA">from</text>
+      <text x="300" y="36" fill="#9CA9C8">"@astrojs/tailwind"</text>
+      <text x="512" y="36" fill="#D0D7EA">;</text>
+      <text y="72" fill="#7383A7">3</text>
+      <text x="36" y="72" fill="#5B8CFF">export</text>
+      <text x="132" y="72" fill="#AA5BFF">default</text>
+      <text x="220" y="72" fill="#5B8CFF">defineConfig</text>
+      <text x="372" y="72" fill="#D0D7EA">({</text>
+      <text y="108" fill="#7383A7">4</text>
+      <text x="72" y="108" fill="#9CA9C8">i18n:</text>
+      <text x="148" y="108" fill="#D0D7EA">{ locales: [</text>
+      <text x="320" y="108" fill="#9CA9C8">"en"</text>
+      <text x="372" y="108" fill="#D0D7EA">,</text>
+      <text x="400" y="108" fill="#9CA9C8">"zh"</text>
+      <text x="452" y="108" fill="#D0D7EA">], defaultLocale: </text>
+      <text x="688" y="108" fill="#9CA9C8">"zh"</text>
+      <text x="740" y="108" fill="#D0D7EA">},</text>
+      <text y="144" fill="#7383A7">5</text>
+      <text x="36" y="144" fill="#D0D7EA">...})</text>
+    </g>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="620" y="340" width="420" height="240" rx="24" fill="#111A2E" stroke="#1F2A44" stroke-width="2" />
+    <text x="650" y="400" fill="#5B8CFF" font-family="'Inter', sans-serif" font-weight="600" font-size="28">Astro · Qt · OpenRGB</text>
+    <text x="650" y="440" fill="#9CA9C8" font-family="'Inter', sans-serif" font-size="18" opacity="0.9">Frontier engineering notes & lighting experiments</text>
+    <rect x="650" y="470" width="180" height="48" rx="24" fill="url(#accent)" />
+    <text x="680" y="502" fill="#0B0D12" font-family="'Inter', sans-serif" font-weight="600" font-size="18">Build. Document. Share.</text>
+  </g>
+</svg>
+

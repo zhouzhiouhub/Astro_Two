@@ -2,9 +2,15 @@
 locale: zh
 slugBase: astro-keywords
 title: "🚀 Astro 关键词与概念速查表"
-description: "整理 Astro 开发常见核心概念、目录结构、配置项与术语解释，帮助你快速理解 Astro 的工作机制与生态。"
+description: "浓缩梳理 Astro 架构、项目结构、常见配置与术语，快速建立整体认知。"
 date: 2025-10-23
 tags: [astro, basics, guide]
+summary: "面向 Astro 开发者的术语清单，涵盖 Islands 架构、组件类型、构建策略、配置选项与部署适配器。通过表格与流程图解释目录结构、CLI 脚本与效率技巧，帮助你在创建新项目时保持清晰。"
+cover:
+  src: "/og/blog-astro-keywords.svg"
+  alt: "Astro 关键字速查板"
+canonical: "https://zhouzhiou.com/zh/blog/astro-keywords"
+related: ["astro-i18n-demo"]
 ---
 
 # 🚀 Astro 关键词与概念速查表

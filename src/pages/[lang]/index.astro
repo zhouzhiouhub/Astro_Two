@@ -3,12 +3,13 @@ import Base from "@/layouts/BaseLayout.astro";
 import Header from "@/components/Header.astro";
 import Hero from "@/components/Hero.astro";
 import Metrics from "@/components/Metrics.astro";
-import IntegrationsGrid from "@/components/IntegrationsGrid.astro";
-import PricingTable from "@/components/PricingTable.astro";
-import TestimonialCarousel from "@/components/TestimonialCarousel.astro";
 import FAQAccordion from "@/components/FAQAccordion.astro";
 import Footer from "@/components/Footer.astro";
 import { t, isLocale } from "@/lib/i18n";
+import { homeContent } from "@/data/home";
+import { projectsByLocale } from "@/data/projects";
+import { notesByLocale } from "@/data/notes";
+import { getCollection } from "astro:content";
 
 export async function getStaticPaths() {
   return [
@@ -19,34 +20,138 @@ export async function getStaticPaths() {
 export const prerender = true;
 
 const { lang } = Astro.params;
-if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }
+if (!lang || !isLocale(lang)) {
+  throw new Error("Invalid locale");
+}
 const title = t("home", "title", lang);
 const subtitle = t("home", "subtitle", lang);
 const badge = t("home", "badge", lang);
 const url = Astro.url.href;
+const content = homeContent[lang];
+
+const posts = (await getCollection('posts'))
+  .filter((entry) => entry.data.locale === lang)
+  .sort((a, b) => new Date(b.data.date as string | Date).getTime() - new Date(a.data.date as string | Date).getTime())
+  .slice(0, 3);
+const projects = projectsByLocale[lang].slice(0, 3);
+const notes = notesByLocale[lang].slice(0, 3);
 ---
-<Base title={title} desc={subtitle} url={url} lang={lang}>
+<Base title={content.seoTitle} desc={content.seoDescription} url={url} lang={lang} appendSiteName={false}>
   <Header lang={lang} />
 
   <main>
-    <Hero badge={badge} title={title} subtitle={subtitle} ctaPrimary={t('common','cta_primary', lang)} ctaSecondary={t('common', 'cta_secondary', lang)} />
-    <Metrics items={[
-      {label: 'MRR', value: '$128k', hint: '+12% MoM'},
-      {label: 'Active Accounts', value: '3,204', hint: '99.9% uptime'},
-      {label: 'Queries / min', value: '108,452', hint: 'global edge network'},
-    ]} />
-    <IntegrationsGrid title={t('integrations','title', lang)} items={[
-      {name:'Stripe', icon:'/icons/brands/stripe.svg'},
-      {name:'Vercel', icon:'/icons/brands/vercel.svg'},
-      {name:'Slack', icon:'/icons/brands/slack.svg'},
-      {name:'Notion', icon:'/icons/brands/notion.svg'},
-      {name:'Zapier', icon:'/icons/brands/zapier.svg'},
-      {name:'HubSpot', icon:'/icons/brands/hubspot.svg'},
-    ]}/>
-    <PricingTable lang={lang} title={t('pricing','title', lang)} subtitle={t('pricing','subtitle', lang)} cta={t('common','cta_primary', lang)} />
-    <TestimonialCarousel lang={lang} />
+    <Hero
+      badge={badge}
+      title={title}
+      subtitle={subtitle}
+      mission={content.mission}
+      ctaPrimary={{ label: t('common','cta_primary', lang), href: `/${lang}/blog` }}
+      ctaSecondary={{ label: t('common','cta_secondary', lang), href: `/${lang}/projects` }}
+      highlights={content.highlights}
+    />
+
+    <Metrics items={content.metrics} />
+
+    <section class="container py-12">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-semibold">{t('home','posts_title', lang)}</h2>
+          <p class="text-sm text-[var(--color-muted)]">{t('blog','subtitle', lang)}</p>
+        </div>
+        <a href={`/${lang}/blog`} class="text-sm text-[var(--color-primary)] hover:underline">{t('home','posts_more', lang)}</a>
+      </div>
+      <div class="mt-6 grid gap-6 md:grid-cols-3">
+        {posts.map((post) => {
+          const date = typeof post.data.date === 'string' ? post.data.date : new Date(post.data.date).toISOString().slice(0, 10);
+          const cover = post.data.cover?.src ?? '/og/default.svg';
+          const alt = post.data.cover?.alt ?? post.data.title;
+          return (
+            <article class="card flex h-full flex-col overflow-hidden">
+              <a href={`/${lang}/blog/${post.data.slugBase}`} class="block">
+                <img src={cover} alt={alt} loading="lazy" class="h-40 w-full object-cover" />
+              </a>
+              <div class="flex flex-1 flex-col gap-3 p-5">
+                <time datetime={date} class="text-xs text-[var(--color-muted)]">{date}</time>
+                <h3 class="text-lg font-semibold leading-tight">
+                  <a href={`/${lang}/blog/${post.data.slugBase}`}>{post.data.title}</a>
+                </h3>
+                <p class="text-sm text-[var(--color-muted)] leading-relaxed">{post.data.summary ?? post.data.description}</p>
+                <a href={`/${lang}/blog/${post.data.slugBase}`} class="mt-auto inline-flex items-center gap-2 text-sm text-[var(--color-primary)]">
+                  {t('blog','read_more', lang)}
+                  <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+
+    <section class="container py-12">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-semibold">{t('home','projects_title', lang)}</h2>
+          <p class="text-sm text-[var(--color-muted)]">{t('projects','subtitle', lang)}</p>
+        </div>
+        <a href={`/${lang}/projects`} class="text-sm text-[var(--color-primary)] hover:underline">{t('home','projects_more', lang)}</a>
+      </div>
+      <div class="mt-6 grid gap-6 md:grid-cols-3">
+        {projects.map((project) => (
+          <article class="card flex h-full flex-col overflow-hidden">
+            <a href={`/${lang}/projects/${project.slug}`}>
+              <img src={project.image} alt={project.imageAlt} loading="lazy" class="h-40 w-full object-cover" />
+            </a>
+            <div class="flex flex-1 flex-col gap-3 p-5">
+              <span class="text-xs text-[var(--color-muted)]">{project.year}</span>
+              <h3 class="text-lg font-semibold leading-tight">
+                <a href={`/${lang}/projects/${project.slug}`}>{project.title}</a>
+              </h3>
+              <p class="text-sm text-[var(--color-muted)] leading-relaxed">{project.summary}</p>
+              <a href={`/${lang}/projects/${project.slug}`} class="mt-auto inline-flex items-center gap-2 text-sm text-[var(--color-primary)]">
+                {t('projects','view_case_study', lang)}
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="container py-12">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-semibold">{t('home','notes_title', lang)}</h2>
+          <p class="text-sm text-[var(--color-muted)]">{t('notes','subtitle', lang)}</p>
+        </div>
+        <a href={`/${lang}/notes`} class="text-sm text-[var(--color-primary)] hover:underline">{t('home','notes_more', lang)}</a>
+      </div>
+      <div class="mt-6 grid gap-6 md:grid-cols-3">
+        {notes.map((note) => (
+          <article class="card flex h-full flex-col gap-3 p-5">
+            <div class="flex items-center justify-between text-xs text-[var(--color-muted)]">
+              <span>{t('notes','updated_label', lang)} {note.updatedAt}</span>
+              <div class="flex flex-wrap gap-2">
+                {note.tags.slice(0, 2).map((tag) => (
+                  <span class="rounded-full border border-[var(--color-border)] px-3 py-1">#{tag}</span>
+                ))}
+              </div>
+            </div>
+            <h3 class="text-lg font-semibold leading-tight">{note.title}</h3>
+            <p class="text-sm text-[var(--color-muted)] leading-relaxed">{note.summary}</p>
+            {note.link && (
+              <a href={note.link} class="mt-auto inline-flex items-center gap-2 text-sm text-[var(--color-primary)]" target="_blank" rel="noopener">
+                GitHub
+                <span aria-hidden="true">→</span>
+              </a>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+
     <FAQAccordion lang={lang} />
     <Footer lang={lang} />
   </main>
 
 </Base>
+

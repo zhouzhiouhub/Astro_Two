@@ -1,0 +1,42 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0F172A" />
+      <stop offset="1" stop-color="#1B2338" />
+    </linearGradient>
+    <linearGradient id="signal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5B8CFF" />
+      <stop offset="1" stop-color="#4FFFD7" />
+    </linearGradient>
+    <filter id="glow" x="-80" y="-80" width="1360" height="960" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="32" stdDeviation="48" flood-color="#0AE2FF" flood-opacity="0.25" />
+    </filter>
+  </defs>
+  <rect width="1200" height="800" rx="32" fill="url(#bg)" />
+  <g filter="url(#glow)">
+    <rect x="170" y="200" width="860" height="360" rx="32" stroke="#20304C" stroke-width="2" fill="#0C1424" />
+    <rect x="200" y="240" width="240" height="280" rx="24" fill="#111B2D" stroke="#23324C" />
+    <rect x="240" y="280" width="160" height="40" rx="12" fill="#16233A" stroke="#2F4367" />
+    <rect x="240" y="340" width="160" height="40" rx="12" fill="#16233A" stroke="#2F4367" />
+    <rect x="240" y="400" width="160" height="40" rx="12" fill="#16233A" stroke="#2F4367" />
+    <circle cx="220" cy="300" r="10" fill="#4FFFD7" />
+    <circle cx="220" cy="360" r="10" fill="#5B8CFF" />
+    <circle cx="220" cy="420" r="10" fill="#AA5BFF" />
+
+    <g transform="translate(480 250)">
+      <rect width="470" height="200" rx="24" fill="#111B2D" stroke="#1F2E49" />
+      <path d="M36 140H434" stroke="url(#signal)" stroke-width="6" stroke-linecap="round" stroke-dasharray="12 18" />
+      <polyline points="60,140 120,80 220,120 300,60 380,120 420,80" fill="none" stroke="url(#signal)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+      <circle cx="120" cy="80" r="12" fill="#5B8CFF" />
+      <circle cx="300" cy="60" r="12" fill="#4FFFD7" />
+      <text x="60" y="178" fill="#8295BF" font-family="'Inter', sans-serif" font-size="16">Audio-reactive LED timelines</text>
+    </g>
+
+    <g transform="translate(480 480)">
+      <rect width="470" height="120" rx="24" fill="#0F192B" stroke="#1F2E49" />
+      <text x="40" y="54" fill="#5B8CFF" font-family="'Inter', sans-serif" font-weight="600" font-size="24">QMesh Nodes</text>
+      <text x="40" y="86" fill="#8397C1" font-family="'Inter', sans-serif" font-size="16">Latency &lt; 4ms · Rust control plane · Ableton Link</text>
+    </g>
+  </g>
+</svg>
+

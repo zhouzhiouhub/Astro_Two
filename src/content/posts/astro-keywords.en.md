@@ -5,6 +5,12 @@ title: "🚀 Astro Keywords & Concepts Cheat Sheet"
 description: "A concise guide to Astro’s core concepts, project structure, config options, and common terms to get productive fast."
 date: 2025-10-23
 tags: [astro, basics, guide]
+summary: "A fast reference to Astro’s vocabulary—understand the islands architecture, component types, bundling strategies, configuration options, and deployment adapters. Includes tables for core keywords, file structure explanations, CLI scripts, and productivity shortcuts so new projects stay organised."
+cover:
+  src: "/og/blog-astro-keywords.svg"
+  alt: "Astro keywords cheat sheet board"
+canonical: "https://zhouzhiou.com/en/blog/astro-keywords"
+related: ["astro-i18n-demo"]
 ---
 
 # 🚀 Astro Keywords & Concepts Cheat Sheet

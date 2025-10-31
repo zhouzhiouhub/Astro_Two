@@ -5,6 +5,12 @@ title: "Astro i18n Guide: Localized Routes & Content"
 description: "A practical guide to implementing language‑prefixed routes and Content Collections with Astro."
 date: 2025-10-23
 tags: [astro, i18n, content]
+summary: "Build a multilingual Astro site with language-prefixed routes, Content Collections, and helpers for localized navigation. Learn how to configure manual routing, create shared dictionaries, render translated posts, and wire hreflang metadata without sacrificing performance or authoring flow. The guide covers Accept-Language negotiation, astro:i18n utilities, and tactics for keeping English and Chinese content in sync."
+cover:
+  src: "/og/blog-astro-i18n.svg"
+  alt: "Diagram explaining localized routes in Astro"
+canonical: "https://zhouzhiou.com/en/blog/astro-i18n-demo"
+related: ["astro-keywords"]
 ---
 
 # Astro Internationalization (i18n) Routing Guide

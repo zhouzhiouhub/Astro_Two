@@ -5,18 +5,23 @@ import Footer from "@/components/Footer.astro";
 import SearchButton from "@/components/SearchButton.astro";
 import { isLocale, type Locale, t } from "@/lib/i18n";
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Comments from "@/components/Comments.astro";
+import { authorProfile } from "@/data/author";
+import { socials } from "@/data/about";
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts');
-  return posts.map((p) => ({ params: { lang: p.data.locale, slug: p.data.slugBase } }));
+  const posts = await getCollection('posts') as PostEntry[];
+  return posts.map((p: PostEntry) => ({ params: { lang: p.data.locale, slug: p.data.slugBase } }));
 }
 export const prerender = true;
 
 const { lang, slug } = Astro.params as { lang: Locale, slug: string };
 if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }
 
-const all = await getCollection('posts');
-const entry = all.find((p) => p.data.slugBase === slug && p.data.locale === lang);
+type PostEntry = CollectionEntry<'posts'>;
+const all = await getCollection('posts') as PostEntry[];
+const entry = all.find((p: PostEntry): p is PostEntry => p.data.slugBase === slug && p.data.locale === lang);
 if (!entry) { throw new Error("Post not found"); }
 const { Content } = await entry.render();
 const title = entry.data.title;
@@ -24,8 +29,48 @@ const desc = entry.data.description ?? '';
 const url = Astro.url.href;
 const dateVal = entry.data.date;
 const date = typeof dateVal === 'string' ? dateVal : new Date(dateVal).toISOString().slice(0,10);
+const words = (entry.body ?? '').split(/\s+/).filter(Boolean).length;
+const readingMinutes = Math.max(1, Math.round(words / 220));
+const cover = entry.data.cover?.src ?? '/og/default.svg';
+const coverAlt = entry.data.cover?.alt ?? entry.data.title;
+const canonical = entry.data.canonical ?? url;
+const siteOrigin = Astro.site ?? (url ? new URL(url).origin : undefined);
+const toAbsolute = (value: string) => {
+  try {
+    return siteOrigin ? new URL(value, siteOrigin).toString() : new URL(value).toString();
+  } catch {
+    return value;
+  }
+};
+const canonicalUrl = toAbsolute(canonical);
+const coverUrl = toAbsolute(cover);
+const profile = authorProfile[lang];
+const relatedSlugs = entry.data.related ?? [];
+const relatedPosts: PostEntry[] = relatedSlugs
+  .map((slugBase: string) => all.find((p: PostEntry): p is PostEntry => p.data.slugBase === slugBase && p.data.locale === lang))
+  .filter((p: PostEntry | undefined): p is PostEntry => Boolean(p) && p.data.slugBase !== entry.data.slugBase);
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: title,
+  description: desc || entry.data.summary,
+  image: coverUrl,
+  author: {
+    "@type": "Person",
+    name: profile.name,
+  },
+  datePublished: new Date(date).toISOString(),
+  dateModified: new Date(date).toISOString(),
+  inLanguage: lang,
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": canonicalUrl,
+  },
+  url: canonicalUrl,
+};
 ---
-<Base title={title} desc={desc} url={url} lang={lang}>
+<Base title={title} desc={desc} url={url} lang={lang} type="article" image={coverUrl} canonical={canonicalUrl} structuredData={structuredData}>
   <Header lang={lang} />
   <main class="container py-12">
     <div class="mb-4 flex justify-between items-center">
@@ -34,10 +79,72 @@ const date = typeof dateVal === 'string' ? dateVal : new Date(dateVal).toISOStri
     </div>
 
     <article class="prose prose-neutral max-w-none dark:prose-invert">
-      <h1>{title}</h1>
-      <p class="mt-0 text-[var(--color-muted)] text-sm">{date}</p>
+      <div class="overflow-hidden rounded-3xl border border-[var(--color-border)]">
+        <img src={cover} alt={coverAlt} loading="lazy" class="h-72 w-full object-cover" />
+      </div>
+      <h1 class="mt-8">{title}</h1>
+      <p class="mt-2 text-[var(--color-muted)] text-sm flex items-center gap-3">
+        <time datetime={date}>{date}</time>
+        <span>• {readingMinutes} {t('blog','reading_time', lang)}</span>
+      </p>
+      {entry.data.summary && <p class="lead text-base text-[var(--color-muted)]">{entry.data.summary}</p>}
       <Content />
     </article>
+
+    <section class="mt-16 grid gap-6 rounded-3xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-6 md:grid-cols-[auto,1fr]">
+      <div class="flex flex-col items-center gap-4 text-center md:text-left">
+        <div class="h-24 w-24 overflow-hidden rounded-full border border-[var(--color-border)]">
+          <img src={profile.avatar} alt={profile.name} loading="lazy" class="h-full w-full object-cover" />
+        </div>
+        <div>
+          <div class="text-lg font-semibold">{profile.name}</div>
+          <div class="text-sm text-[var(--color-muted)]">{profile.title}</div>
+        </div>
+      </div>
+      <div class="flex flex-col gap-6">
+        <p class="text-sm text-[var(--color-muted)] leading-relaxed">{profile.bio}</p>
+        <div class="flex flex-wrap gap-3 text-sm text-[var(--color-muted)]">
+          {socials.map((social) => (
+            <a href={social.href} class="rounded-full border border-[var(--color-border)] px-4 py-2 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]" rel="noopener" target={social.href.startsWith('mailto:') ? '_self' : '_blank'}>
+              {social.label}
+            </a>
+          ))}
+        </div>
+        <div>
+          <a href={`/${lang}/contact`} class="btn btn-primary text-sm" >{t('common','cta_contact', lang)}</a>
+        </div>
+      </div>
+    </section>
+
+    {relatedPosts.length > 0 && (
+      <section class="mt-16">
+        <h2 class="text-2xl font-semibold">{t('blog','related_title', lang)}</h2>
+        <div class="mt-6 grid gap-6 md:grid-cols-2">
+          {relatedPosts.map((post: PostEntry) => {
+            const d = typeof post.data.date === 'string' ? post.data.date : new Date(post.data.date).toISOString().slice(0,10);
+            const summary = post.data.summary ?? post.data.description;
+            const coverSrc = post.data.cover?.src ?? '/og/default.svg';
+            const coverAltText = post.data.cover?.alt ?? post.data.title;
+            return (
+              <a href={`/${lang}/blog/${post.data.slugBase}`} class="group flex overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] transition hover:-translate-y-0.5 hover:border-[var(--color-primary)]">
+                <img src={coverSrc} alt={coverAltText} loading="lazy" class="h-full w-24 object-cover md:w-40" />
+                <div class="flex flex-col gap-2 p-4">
+                  <time datetime={d} class="text-xs text-[var(--color-muted)]">{d}</time>
+                  <div class="text-lg font-semibold leading-tight">{post.data.title}</div>
+                  {summary && <p class="text-xs text-[var(--color-muted)]" style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">{summary}</p>}
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+    )}
+
+    <section class="mt-16">
+      <h2 class="text-2xl font-semibold">{t('blog','comments_title', lang)}</h2>
+      <p class="mt-2 text-sm text-[var(--color-muted)]">{t('blog','comments_body', lang)}</p>
+      <Comments />
+    </section>
 
     <Footer lang={lang} />
   </main>

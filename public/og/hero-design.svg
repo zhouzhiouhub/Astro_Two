@@ -1,0 +1,58 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#141927" />
+      <stop offset="1" stop-color="#1E2338" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFB86C" />
+      <stop offset="1" stop-color="#FF6AC1" />
+    </linearGradient>
+    <filter id="shadow" x="-40" y="-40" width="1280" height="880" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="24" stdDeviation="48" flood-color="#000" flood-opacity="0.3" />
+    </filter>
+  </defs>
+  <rect width="1200" height="800" rx="32" fill="url(#bg)" />
+  <g filter="url(#shadow)" transform="translate(140 120)">
+    <rect width="920" height="560" rx="32" fill="#10182A" stroke="#1F2942" stroke-width="2" />
+    <rect x="60" y="80" width="320" height="420" rx="24" fill="#161F33" />
+    <rect x="420" y="80" width="440" height="420" rx="24" fill="#111A2C" />
+
+    <text x="90" y="130" fill="#9CA9C8" font-family="'Inter', sans-serif" font-size="28" letter-spacing="0.02em">Design Tokens</text>
+    <g font-family="'Inter', sans-serif" font-size="18" fill="#64708C">
+      <text x="90" y="180">Primary · #5B8CFF</text>
+      <text x="90" y="216">Secondary · #AA5BFF</text>
+      <text x="90" y="252">Surface · #10182A</text>
+    </g>
+    <g transform="translate(70 280)">
+      <rect width="120" height="60" rx="18" fill="url(#accent)" />
+      <text x="30" y="38" fill="#101010" font-family="'Inter', sans-serif" font-weight="600">Primary</text>
+    </g>
+    <g transform="translate(220 280)">
+      <rect width="120" height="60" rx="18" fill="rgba(255,255,255,0.1)" stroke="#2B3248" />
+      <text x="18" y="38" fill="#C9D2EA" font-family="'Inter', sans-serif" font-weight="600">Secondary</text>
+    </g>
+
+    <rect x="460" y="120" width="360" height="60" rx="16" fill="rgba(255,255,255,0.05)" stroke="#252F45" />
+    <text x="490" y="158" fill="#C9D2EA" font-family="'Inter', sans-serif" font-weight="600" font-size="22">Navigation · dark theme</text>
+    <g transform="translate(480 200)">
+      <rect width="120" height="44" rx="14" fill="url(#accent)" />
+      <text x="28" y="30" fill="#101010" font-family="'Inter', sans-serif" font-weight="600">Home</text>
+      <rect x="140" width="120" height="44" rx="14" fill="rgba(255,255,255,0.08)" />
+      <text x="172" y="30" fill="#C9D2EA" font-family="'Inter', sans-serif" font-weight="600">Blog</text>
+      <rect x="280" width="120" height="44" rx="14" fill="rgba(255,255,255,0.08)" />
+      <text x="306" y="30" fill="#C9D2EA" font-family="'Inter', sans-serif" font-weight="600">Projects</text>
+    </g>
+
+    <g transform="translate(460 300)">
+      <rect width="360" height="200" rx="24" fill="#101B30" stroke="#1F2942" />
+      <text x="32" y="58" fill="#5B8CFF" font-family="'Inter', sans-serif" font-weight="600">Module layout</text>
+      <text x="32" y="98" width="296" fill="#9CA9C8" font-family="'Inter', sans-serif" font-size="16">
+        Reusable Astro components for hero, metrics, testimonials, and cards. Built for bilingual layouts.
+      </text>
+      <rect x="32" y="140" width="140" height="44" rx="14" fill="url(#accent)" />
+      <text x="60" y="168" fill="#101010" font-family="'Inter', sans-serif" font-weight="600">Preview</text>
+    </g>
+  </g>
+</svg>
+

@@ -35,7 +35,7 @@ const e = Astro.url.searchParams.get('e');
       </div>
     )}
 
-    <form class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 card p-6" method="post" action={`/api/contact?lang=${lang}`}>
+    <form class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 card p-6" method="post" action={`/api/contact?lang=${lang}`}>
       <label class="text-sm">
         <span>{t('contact','form_name', lang)}</span>
         <input class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" name="name" required minlength="1" maxlength="100" />
@@ -48,30 +48,43 @@ const e = Astro.url.searchParams.get('e');
         <span>{t('contact','form_message', lang)}</span>
         <textarea class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" name="message" rows="4" required minlength="5" maxlength="5000" placeholder={t('contact','form_message_placeholder', lang)}></textarea>
       </label>
+      <label class="hidden">
+        <span>{t('contact','spam_guard', lang)}</span>
+        <input type="text" name="website" tabindex="-1" autocomplete="off" />
+      </label>
       <div class="md:col-span-2">
-        <button class="btn btn-primary">{t('contact','send', lang)}</button>
+        <button class="btn btn-primary px-6 py-3 text-base font-semibold">{t('contact','send', lang)}</button>
       </div>
     </form>
+
+    <div class="mt-6 flex flex-col gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-6 text-sm text-[var(--color-muted)]">
+      <div>{t('contact','privacy_notice', lang)}</div>
+      <div>{t('contact','privacy_detail', lang)}</div>
+      <a href="mailto:hello@zhouzhiou.com" class="inline-flex items-center gap-2 text-[var(--color-primary)]">
+        {t('contact','mailto_label', lang)}
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
 
     <Footer lang={lang} />
   </main>
   <script>
     (function () {
-      var alert = document.getElementById('sent-alert');
-      if (alert) {
-        // Auto dismiss after 4s with a small fade
-        setTimeout(function () {
-          alert.style.transition = 'opacity 200ms ease';
-          alert.style.opacity = '0';
-          setTimeout(function () { alert.remove(); }, 240);
-        }, 4000);
-        // Clean the URL so refreshing doesn't re-show the banner
-        try {
-          var url = new URL(window.location.href);
-          url.searchParams.delete('sent');
-          window.history.replaceState({}, document.title, url.toString());
-        } catch (_) {}
-      }
+      var node = document.getElementById('sent-alert');
+      if (!(node instanceof HTMLElement)) return;
+      var alertEl = node;
+      // Auto dismiss after 4s with a small fade
+      setTimeout(function () {
+        alertEl.style.transition = 'opacity 200ms ease';
+        alertEl.style.opacity = '0';
+        setTimeout(function () { alertEl.remove(); }, 240);
+      }, 4000);
+      // Clean the URL so refreshing doesn't re-show the banner
+      try {
+        var url = new URL(window.location.href);
+        url.searchParams.delete('sent');
+        window.history.replaceState({}, document.title, url.toString());
+      } catch (_) {}
     })();
   </script>
 </Base>

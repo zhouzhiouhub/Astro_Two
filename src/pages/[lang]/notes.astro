@@ -4,6 +4,7 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import SearchButton from "@/components/SearchButton.astro";
 import { t, isLocale } from "@/lib/i18n";
+import { notesByLocale } from "@/data/notes";
 
 export async function getStaticPaths() {
   return [
@@ -18,6 +19,17 @@ if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }
 const title = t("notes", "title", lang);
 const subtitle = t("notes", "subtitle", lang);
 const url = Astro.url.href;
+const allNotes = notesByLocale[lang];
+const q = Astro.url.searchParams.get('q')?.toLowerCase() ?? '';
+const tag = Astro.url.searchParams.get('tag');
+const tags = Array.from(new Set(allNotes.flatMap((note) => note.tags))).sort();
+const visibleNotes = allNotes.filter((note) => {
+  const matchesQuery = q
+    ? [note.title, note.summary, note.tags.join(' ')].some((text) => text.toLowerCase().includes(q))
+    : true;
+  const matchesTag = tag ? note.tags.includes(tag) : true;
+  return matchesQuery && matchesTag;
+});
 ---
 <Base title={title} desc={subtitle} url={url} lang={lang}>
   <Header lang={lang} />
@@ -25,7 +37,67 @@ const url = Astro.url.href;
     <div class="mb-4 flex justify-end"><SearchButton lang={lang} /></div>
     <h1 class="text-3xl font-semibold">{title}</h1>
     <p class="mt-2 text-[var(--color-muted)]">{subtitle}</p>
-    <div class="mt-8 text-[var(--color-muted)] text-sm">Coming soon…</div>
+    <p class="mt-4 text-sm text-[var(--color-muted)]">{t('notes','intro', lang)}</p>
+
+    <form class="mt-6 grid gap-4 md:grid-cols-[2fr,1fr]" method="get">
+      <label class="flex flex-col gap-2 text-sm">
+        <span class="text-[var(--color-muted)]">{t('common','search', lang)}</span>
+        <input
+          type="search"
+          name="q"
+          value={q}
+          placeholder={t('notes','search_placeholder', lang)}
+          class="rounded-xl border border-[var(--color-border)] bg-transparent px-4 py-3 text-sm outline-none focus:border-[var(--color-primary)]"
+        />
+      </label>
+      <label class="flex flex-col gap-2 text-sm">
+        <span class="text-[var(--color-muted)]">{t('notes','tag_label', lang)}</span>
+        <select
+          name="tag"
+          value={tag ?? ''}
+          class="rounded-xl border border-[var(--color-border)] bg-transparent px-4 py-3 text-sm outline-none focus:border-[var(--color-primary)]"
+        >
+          <option value="">{t('blog','tag_all', lang)}</option>
+          {tags.map((option) => (
+            <option value={option}>{option}</option>
+          ))}
+        </select>
+      </label>
+      <div class="md:col-span-2 flex justify-end gap-3">
+        <button type="submit" class="btn btn-primary text-sm">{lang === 'zh' ? '筛选' : 'Filter'}</button>
+        {(q || tag) && (
+          <a href={`/${lang}/notes`} class="btn btn-secondary text-sm">{lang === 'zh' ? '重置' : 'Reset'}</a>
+        )}
+      </div>
+    </form>
+
+    <section class="mt-8 grid gap-6 md:grid-cols-2">
+      {visibleNotes.length === 0 && (
+        <div class="text-sm text-[var(--color-muted)]">{t('notes','empty', lang)}</div>
+      )}
+      {visibleNotes.map((note) => (
+        <article class="card flex h-full flex-col gap-4 p-6">
+          <div class="flex items-center justify-between text-xs text-[var(--color-muted)]">
+            <span>{t('notes','updated_label', lang)} {note.updatedAt}</span>
+            <div class="flex flex-wrap gap-2">
+              {note.tags.map((tag) => (
+                <span class="rounded-full border border-[var(--color-border)] px-3 py-1">#{tag}</span>
+              ))}
+            </div>
+          </div>
+          <div class="space-y-2">
+            <h2 class="text-lg font-semibold">{note.title}</h2>
+            <p class="text-sm text-[var(--color-muted)] leading-relaxed">{note.summary}</p>
+          </div>
+          {note.link && (
+            <a href={note.link} class="inline-flex items-center gap-2 text-sm text-[var(--color-primary)]" target="_blank" rel="noopener">
+              GitHub
+              <span aria-hidden="true">→</span>
+            </a>
+          )}
+        </article>
+      ))}
+    </section>
     <Footer lang={lang} />
   </main>
 </Base>

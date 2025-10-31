@@ -5,6 +5,7 @@ import Footer from "@/components/Footer.astro";
 import SearchButton from "@/components/SearchButton.astro";
 import { t, isLocale } from "@/lib/i18n";
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
   return [
@@ -19,10 +20,34 @@ if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }
 const title = t("blog", "title", lang);
 const subtitle = t("blog", "subtitle", lang);
 const url = Astro.url.href;
-const posts = (await getCollection('posts'))
-  .filter(p => p.data.locale === lang)
-  .sort((a,b) => new Date(b.data.date as any).getTime() - new Date(a.data.date as any).getTime());
-const emptyText = (() => { const v = t('blog','empty', lang); return v === 'empty' ? (lang === 'zh' ? '暂无文章。' : 'No posts yet.') : v; })();
+type PostEntry = CollectionEntry<'posts'>;
+
+const allPosts = await getCollection('posts') as PostEntry[];
+const rawPosts: PostEntry[] = allPosts
+  .filter((p): p is PostEntry => p.data.locale === lang)
+  .sort((a: PostEntry, b: PostEntry) => new Date(b.data.date as string | Date).getTime() - new Date(a.data.date as string | Date).getTime());
+
+const enriched: Array<PostEntry & { readingMinutes: number }> = rawPosts.map((post: PostEntry) => {
+  const body = post.body ?? "";
+  const words = body.split(/\s+/).filter(Boolean).length;
+  const readingMinutes = Math.max(1, Math.round(words / 220));
+  return {
+    ...post,
+    readingMinutes,
+  };
+});
+
+const allTags: string[] = Array.from(new Set(enriched.flatMap((post) => post.data.tags ?? []))).sort((a, b) => a.localeCompare(b));
+const selectedTag = Astro.url.searchParams.get('tag');
+const visiblePosts: Array<PostEntry & { readingMinutes: number }> = selectedTag
+  ? enriched.filter((post) => post.data.tags?.includes(selectedTag))
+  : enriched;
+
+const emptyText = (() => {
+  const v = t('blog','empty', lang);
+  if (v && v !== 'empty') return v;
+  return lang === 'zh' ? '暂无文章。' : 'No posts yet.';
+})();
 ---
 <Base title={title} desc={subtitle} url={url} lang={lang}>
   <Header lang={lang} />
@@ -30,18 +55,64 @@ const emptyText = (() => { const v = t('blog','empty', lang); return v === 'empt
     <div class="mb-4 flex justify-end"><SearchButton lang={lang} /></div>
     <h1 class="text-3xl font-semibold">{title}</h1>
     <p class="mt-2 text-[var(--color-muted)]">{subtitle}</p>
-    <section class="mt-8 space-y-6">
-      {posts.length === 0 && (
+    {allTags.length > 0 && (
+      <div class="mt-6 flex flex-wrap items-center gap-3 text-sm">
+        <span class="text-[var(--color-muted)]">{t('blog','tag_label', lang)}:</span>
+        <a
+          href={`/${lang}/blog`}
+          class={`rounded-full border px-4 py-1 transition ${!selectedTag ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-[var(--color-border)] text-[var(--color-muted)] hover:text-[var(--color-fg)]'}`}
+        >
+          {t('blog','tag_all', lang)}
+        </a>
+        {allTags.map((tag: string) => (
+          <a
+            href={`/${lang}/blog?tag=${encodeURIComponent(tag)}`}
+            class={`rounded-full border px-4 py-1 transition ${selectedTag === tag ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-[var(--color-border)] text-[var(--color-muted)] hover:text-[var(--color-fg)]'}`}
+          >
+            #{tag}
+          </a>
+        ))}
+      </div>
+    )}
+    <section class="mt-8 grid gap-6 md:grid-cols-2">
+      {visiblePosts.length === 0 && (
         <div class="text-[var(--color-muted)] text-sm">{emptyText}</div>
       )}
-      {posts.map((p) => {
-        const d = typeof p.data.date === 'string' ? p.data.date : new Date(p.data.date).toISOString().slice(0,10);
+      {visiblePosts.map((post) => {
+        const d = typeof post.data.date === 'string' ? post.data.date : new Date(post.data.date).toISOString().slice(0,10);
+        const cover = post.data.cover?.src ?? '/og/default.svg';
+        const alt = post.data.cover?.alt ?? post.data.title;
         return (
-          <a href={`/${lang}/blog/${p.data.slugBase}`} class="block rounded-lg border border-[var(--color-border)] p-4 hover:border-[var(--color-fg)] transition-colors">
-            <div class="text-sm text-[var(--color-muted)]">{d}</div>
-            <div class="mt-1 text-lg font-semibold">{p.data.title}</div>
-            {p.data.description && <div class="mt-1 text-[var(--color-muted)]">{p.data.description}</div>}
-          </a>
+          <article class="group flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] transition hover:-translate-y-0.5 hover:border-[var(--color-primary)]">
+            <a href={`/${lang}/blog/${post.data.slugBase}`} class="block overflow-hidden">
+              <img src={cover} alt={alt} loading="lazy" class="h-48 w-full object-cover transition duration-300 group-hover:scale-105" />
+            </a>
+            <div class="flex h-full flex-col gap-4 p-5">
+              <div class="flex flex-wrap items-center gap-3 text-xs text-[var(--color-muted)]">
+                <time datetime={d}>{d}</time>
+                <span>• {post.readingMinutes} {t('blog','reading_time', lang)}</span>
+              </div>
+              <div class="space-y-2">
+                <h2 class="text-xl font-semibold leading-tight">
+                  <a href={`/${lang}/blog/${post.data.slugBase}`}>{post.data.title}</a>
+                </h2>
+                <p class="text-sm text-[var(--color-muted)] leading-relaxed">{post.data.summary ?? post.data.description}</p>
+              </div>
+              {post.data.tags?.length > 0 && (
+                <div class="flex flex-wrap gap-2 text-xs text-[var(--color-muted)]">
+                  {post.data.tags.map((tag: string) => (
+                    <span class="rounded-full border border-[var(--color-border)] px-3 py-1">#{tag}</span>
+                  ))}
+                </div>
+              )}
+              <div class="mt-auto">
+                <a href={`/${lang}/blog/${post.data.slugBase}`} class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)]">
+                  {t('blog','read_more', lang)}
+                  <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </div>
+          </article>
         );
       })}
     </section>

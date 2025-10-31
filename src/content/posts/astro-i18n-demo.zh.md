@@ -2,9 +2,15 @@
 locale: zh
 slugBase: astro-i18n-demo
 title: "Astro i18n 演示：本地化路由与内容"
-description: "一个简短示例，展示如何用 [lang] 路由与内容集合添加一篇支持国际化的文章。"
+description: "演示如何通过 [lang] 路由与内容集合来组织多语言文章。"
 date: 2025-10-23
 tags: [astro, i18n, content]
+summary: "完整拆解 Astro 多语言站点实践：配置路由、维护共享字典、渲染中英文文章，并在不牺牲性能的前提下输出 hreflang、Accept-Language 等 SEO 元数据。"
+cover:
+  src: "/og/blog-astro-i18n.svg"
+  alt: "Astro 多语言路由流程图"
+canonical: "https://zhouzhiou.com/zh/blog/astro-i18n-demo"
+related: ["astro-keywords"]
 ---
 
 ```markdown

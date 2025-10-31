@@ -3,6 +3,7 @@ import Base from "@/layouts/BaseLayout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { t, isLocale } from "@/lib/i18n";
+import { projectsByLocale } from "@/data/projects";
 
 export async function getStaticPaths() {
   return [
@@ -17,13 +18,48 @@ if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }
 const title = t("projects", "title", lang);
 const subtitle = t("projects", "subtitle", lang);
 const url = Astro.url.href;
+const projects = projectsByLocale[lang];
 ---
 <Base title={title} desc={subtitle} url={url} lang={lang}>
   <Header lang={lang} />
   <main class="container py-12">
     <h1 class="text-3xl font-semibold">{title}</h1>
     <p class="mt-2 text-[var(--color-muted)]">{subtitle}</p>
-    <div class="mt-8 text-[var(--color-muted)] text-sm">Coming soon…</div>
+    <section class="mt-8 grid gap-6 md:grid-cols-2">
+      {projects.map((project) => (
+        <article class="group flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] transition hover:-translate-y-0.5 hover:border-[var(--color-primary)]">
+          <a href={`/${lang}/projects/${project.slug}`} class="block overflow-hidden">
+            <img src={project.image} alt={project.imageAlt} loading="lazy" class="h-56 w-full object-cover transition duration-300 group-hover:scale-105" />
+          </a>
+          <div class="flex flex-1 flex-col gap-4 p-5">
+            <div class="flex items-center justify-between text-xs text-[var(--color-muted)]">
+              <span>{project.year}</span>
+              <span>{project.tagline}</span>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold leading-tight">
+                <a href={`/${lang}/projects/${project.slug}`}>{project.title}</a>
+              </h2>
+              <p class="mt-2 text-sm text-[var(--color-muted)] leading-relaxed">{project.summary}</p>
+            </div>
+            <div class="flex flex-wrap gap-2 text-xs text-[var(--color-muted)]">
+              {project.tech.map((tech) => (
+                <span class="rounded-full border border-[var(--color-border)] px-3 py-1">{tech}</span>
+              ))}
+            </div>
+            <div class="mt-auto flex flex-wrap gap-3 text-sm">
+              <a href={`/${lang}/projects/${project.slug}`} class="inline-flex items-center gap-2 text-[var(--color-primary)]">
+                {t('projects','view_case_study', lang)}
+                <span aria-hidden="true">→</span>
+              </a>
+              {project.links.map((link) => (
+                <a href={link.href} class="inline-flex items-center gap-2 text-[var(--color-muted)] hover:text-[var(--color-primary)]" target={link.href.startsWith('http') ? '_blank' : '_self'} rel="noopener">{link.label}</a>
+              ))}
+            </div>
+          </div>
+        </article>
+      ))}
+    </section>
     <Footer lang={lang} />
   </main>
 </Base>

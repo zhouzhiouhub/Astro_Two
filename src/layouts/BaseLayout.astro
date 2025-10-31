@@ -2,8 +2,93 @@
 import "../styles/tailwind.css";
 import SearchModal from "@/components/SearchModal.astro";
 import { seo as buildSeo } from "@/lib/seo";
-const { title = "zhouzhiou · ZHIOU", desc = "Astro business theme", url = "", lang = "en", noindex = false } = Astro.props;
-const meta = buildSeo({ title, desc, url });
+import { SUPPORTED_LOCALES, defaultLocale, pathWithLocale, type Locale } from "@/lib/i18n";
+
+type Alternate = { lang: Locale; url: string };
+type Structured = Record<string, unknown> | Array<Record<string, unknown>>;
+
+interface Props {
+  title?: string;
+  desc?: string;
+  url?: string;
+  lang?: Locale;
+  noindex?: boolean;
+  image?: string;
+  canonical?: string;
+  type?: "website" | "article";
+  alternates?: Alternate[];
+  appendSiteName?: boolean;
+  structuredData?: Structured;
+}
+
+const {
+  title = "zhouzhiou",
+  desc = "Exploring frontier technology, design, and personal projects.",
+  url: providedUrl,
+  lang = "en",
+  noindex = false,
+  image,
+  canonical,
+  type = "website",
+  alternates: providedAlternates = [],
+  appendSiteName,
+  structuredData,
+} = Astro.props as Props;
+
+const currentUrl = providedUrl ?? Astro.url.href;
+const siteOrigin = Astro.site ?? (currentUrl ? new URL(currentUrl).origin : undefined);
+const currentPath = Astro.url.pathname;
+
+const toAbsolute = (value: string | undefined) => {
+  if (!value) return value;
+  try {
+    return siteOrigin ? new URL(value, siteOrigin).toString() : new URL(value).toString();
+  } catch {
+    return value;
+  }
+};
+
+const normalizeAlternate = (alt: Alternate) => ({
+  lang: alt.lang,
+  url: toAbsolute(alt.url) ?? alt.url,
+});
+
+const computedAlternates = SUPPORTED_LOCALES.map((locale) => {
+  const localizedPath = pathWithLocale(locale, currentPath);
+  const absolute = siteOrigin ? new URL(localizedPath, siteOrigin).toString() : localizedPath;
+  return { lang: locale, url: absolute } as Alternate;
+});
+
+const mergedAlternates = new Map<Locale, string>();
+for (const alt of [...computedAlternates, ...providedAlternates.map(normalizeAlternate)]) {
+  if (!mergedAlternates.has(alt.lang)) {
+    mergedAlternates.set(alt.lang, alt.url);
+  }
+}
+const finalAlternates = Array.from(mergedAlternates.entries()).map(([locale, href]) => ({
+  lang: locale,
+  url: href,
+})) as Alternate[];
+
+const resolvedCanonical = toAbsolute(canonical ?? currentUrl) ?? currentUrl;
+const resolvedUrl = toAbsolute(currentUrl) ?? currentUrl;
+
+const meta = buildSeo({
+  title,
+  desc,
+  url: resolvedUrl,
+  canonical: resolvedCanonical,
+  image,
+  type,
+  locale: lang,
+  alternates: finalAlternates,
+  appendSiteName,
+  structuredData,
+});
+
+const ogImage = toAbsolute(meta.og.image) ?? meta.og.image;
+const twitterImage = toAbsolute(meta.twitter.image) ?? meta.twitter.image;
+const xDefaultAlternate = finalAlternates.find((alt) => alt.lang === defaultLocale) ?? finalAlternates[0];
 ---
 <!doctype html>
 <html lang={lang} data-pagefind-filter={`language:${lang}`}>
@@ -24,17 +109,28 @@ const meta = buildSeo({ title, desc, url });
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{meta.title}</title>
     <meta name="description" content={meta.description} />
+    <link rel="canonical" href={meta.canonical} />
+    {meta.alternates.map((alt) => (
+      <link rel="alternate" hreflang={alt.lang} href={alt.url} />
+    ))}
+    {xDefaultAlternate && (
+      <link rel="alternate" hreflang="x-default" href={xDefaultAlternate.url} />
+    )}
     <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={url} />
+    <meta property="og:type" content={meta.og.type} />
+    <meta property="og:url" content={meta.og.url || resolvedUrl} />
     <meta property="og:title" content={meta.title} />
     <meta property="og:description" content={meta.description} />
-    <meta property="og:image" content={meta.og.image} />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={meta.title} />
-    <meta name="twitter:description" content={meta.description} />
-    <meta name="twitter:image" content={meta.og.image} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={meta.og.locale ?? lang} />
+    <meta name="twitter:card" content={meta.twitter.card} />
+    <meta name="twitter:title" content={meta.twitter.title} />
+    <meta name="twitter:description" content={meta.twitter.description} />
+    <meta name="twitter:image" content={twitterImage} />
     <link rel="icon" href="/favicon.svg" />
+    {structuredData && (
+      <script type="application/ld+json" is:inline>{JSON.stringify(structuredData)}</script>
+    )}
   </head>
   <body data-pagefind-body>
     <slot />
