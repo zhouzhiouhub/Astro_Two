@@ -20,7 +20,7 @@ export const aboutContent: AboutContentMap = {
   en: {
     introHeading: "Who I am",
     introBody: [
-      "I'm Zhou Zhiou — an engineer and designer shipping bilingual products, lighting control systems, and content-heavy sites.",
+      "I'm Mr. Zhou — an engineer and designer shipping bilingual products, lighting control systems, and content-heavy sites.",
       "I share experiments so other builders can reuse the playbooks, from Astro performance tuning to Qt graphics pipelines.",
     ],
     skillsHeading: "Core stack",
@@ -42,12 +42,12 @@ export const aboutContent: AboutContentMap = {
     contactSummary: "Let’s collaborate on human-centred tools, lighting, or creative coding projects.",
     resumeLabel: "Download résumé (PDF)",
     resumeUrl: "",
-    photoAlt: "Portrait of Zhou Zhiou in the studio",
+    photoAlt: "Portrait of Mr. Zhou in the studio",
   },
   zh: {
     introHeading: "我是谁",
     introBody: [
-      "你好，我是周植欧，一名同时做工程与设计的创作者，常年在双语产品、灯光控制系统与内容站点之间游走。",
+      "你好，我是Mr. Zhou，一名同时做工程与设计的创作者，常年在双语产品、灯光控制系统与内容站点之间游走。",
       "我分享实践经验，希望让更多开发者复用这些方法：从 Astro 性能调优，到 Qt 图形渲染流程。",
     ],
     skillsHeading: "核心技术栈",
@@ -69,7 +69,7 @@ export const aboutContent: AboutContentMap = {
     contactSummary: "欢迎一起探索以人为本的工具、灯光项目与创意编程。",
     resumeLabel: "下载简历（PDF）",
     resumeUrl: "",
-    photoAlt: "周植欧在工作室的照片",
+    photoAlt: "Mr. Zhou 在工作室的照片",
   },
 };
 
