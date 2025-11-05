@@ -31,7 +31,9 @@ const dateVal = entry.data.date;
 const date = typeof dateVal === 'string' ? dateVal : new Date(dateVal).toISOString().slice(0,10);
 const words = (entry.body ?? '').split(/\s+/).filter(Boolean).length;
 const readingMinutes = Math.max(1, Math.round(words / 220));
-const cover = entry.data.cover?.src ?? '/og/default.svg';
+const BASE = import.meta.env.BASE_URL || '/';
+const withBase = (p: string) => (p.startsWith('/') ? BASE + p.slice(1) : p);
+const cover = withBase(entry.data.cover?.src ?? '/og/default.svg');
 const coverAlt = entry.data.cover?.alt ?? entry.data.title;
 const canonical = entry.data.canonical ?? url;
 const siteOrigin = Astro.site ?? (url ? new URL(url).origin : undefined);
@@ -123,7 +125,7 @@ const structuredData = {
           {relatedPosts.map((post: PostEntry) => {
             const d = typeof post.data.date === 'string' ? post.data.date : new Date(post.data.date).toISOString().slice(0,10);
             const summary = post.data.summary ?? post.data.description;
-            const coverSrc = post.data.cover?.src ?? '/og/default.svg';
+            const coverSrc = withBase(post.data.cover?.src ?? '/og/default.svg');
             const coverAltText = post.data.cover?.alt ?? post.data.title;
             return (
               <a href={`/${lang}/blog/${post.data.slugBase}`} class="group flex overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] transition hover:-translate-y-0.5 hover:border-[var(--color-primary)]">

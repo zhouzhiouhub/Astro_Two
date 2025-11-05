@@ -3,9 +3,13 @@ import Base from "@/layouts/BaseLayout.astro";
 import Header from "@/components/Header.astro";
 import IntegrationsGrid from "@/components/IntegrationsGrid.astro";
 import Footer from "@/components/Footer.astro";
-import { t, isLocale } from "@/lib/i18n";
+import { SUPPORTED_LOCALES, t, isLocale } from "@/lib/i18n";
 
- const prerender = true;
+export function getStaticPaths() {
+  return SUPPORTED_LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+export const prerender = true;
 
 const { lang } = Astro.params;
 if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }

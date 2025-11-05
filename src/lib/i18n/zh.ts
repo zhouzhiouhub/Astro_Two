@@ -82,6 +82,8 @@ export const zh: Namespaced = {
     error_auth: "认证失败，请检查 MAIL_USER/MAIL_PASS。",
     error_conn: "连接失败，请检查网络/465 端口。",
     error_retry: "请重试。",
+    manual_notice_title: "需要自建 API",
+    manual_notice_body: "按钮目前不会发送邮件，请自行编写后端接口来处理表单。",
     privacy_notice: "提交内容仅用于回复，不会泄露。",
     privacy_detail: "提交表单即表示你同意我们就该留言与你联系。",
     mailto_label: "直接邮件联系",

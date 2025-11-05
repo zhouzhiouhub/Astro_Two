@@ -27,6 +27,9 @@ const rawPosts: PostEntry[] = allPosts
   .filter((p): p is PostEntry => p.data.locale === lang)
   .sort((a: PostEntry, b: PostEntry) => new Date(b.data.date as string | Date).getTime() - new Date(a.data.date as string | Date).getTime());
 
+const BASE = import.meta.env.BASE_URL || '/';
+const withBase = (p: string) => (p.startsWith('/') ? BASE + p.slice(1) : p);
+
 const enriched: Array<PostEntry & { readingMinutes: number }> = rawPosts.map((post: PostEntry) => {
   const body = post.body ?? "";
   const words = body.split(/\s+/).filter(Boolean).length;
@@ -80,7 +83,7 @@ const emptyText = (() => {
       )}
       {visiblePosts.map((post) => {
         const d = typeof post.data.date === 'string' ? post.data.date : new Date(post.data.date).toISOString().slice(0,10);
-        const cover = post.data.cover?.src ?? '/og/default.svg';
+        const cover = withBase(post.data.cover?.src ?? '/og/default.svg');
         const alt = post.data.cover?.alt ?? post.data.title;
         return (
           <article class="group flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] transition hover:-translate-y-0.5 hover:border-[var(--color-primary)]">

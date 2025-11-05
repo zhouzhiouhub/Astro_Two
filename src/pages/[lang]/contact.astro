@@ -2,9 +2,13 @@
 import Base from "@/layouts/BaseLayout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import { t, isLocale } from "@/lib/i18n";
+import { SUPPORTED_LOCALES, t, isLocale } from "@/lib/i18n";
 
- const prerender = true;
+export function getStaticPaths() {
+  return SUPPORTED_LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+export const prerender = true;
 
 const { lang } = Astro.params;
 if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }
@@ -14,6 +18,8 @@ const url = Astro.url.href;
 const sent = Astro.url.searchParams.get('sent');
 const error = Astro.url.searchParams.get('error');
 const e = Astro.url.searchParams.get('e');
+const manualNoticeTitle = t('contact', 'manual_notice_title', lang);
+const manualNoticeBody = t('contact', 'manual_notice_body', lang);
 ---
 <Base title={title} desc={subtitle} url={url} lang={lang}>
   <Header lang={lang} />
@@ -35,7 +41,7 @@ const e = Astro.url.searchParams.get('e');
       </div>
     )}
 
-    <form class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 card p-6" method="post" action={`/api/contact?lang=${lang}`}>
+    <form id="contact-form" class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 card p-6" method="post">
       <label class="text-sm">
         <span>{t('contact','form_name', lang)}</span>
         <input class="mt-1 w-full rounded-lg bg-black/20 p-3 outline-none border border-[var(--color-border)]" name="name" required minlength="1" maxlength="100" />
@@ -55,6 +61,10 @@ const e = Astro.url.searchParams.get('e');
       <div class="md:col-span-2">
         <button class="btn btn-primary px-6 py-3 text-base font-semibold">{t('contact','send', lang)}</button>
       </div>
+      <div id="manual-api-warning" hidden role="alert" tabindex="-1" class="md:col-span-2 rounded-lg border border-yellow-800/40 bg-yellow-900/20 px-4 py-3 text-yellow-50">
+        <div class="font-medium text-yellow-100">{manualNoticeTitle}</div>
+        <div class="mt-1 text-sm text-yellow-100/90">{manualNoticeBody}</div>
+      </div>
     </form>
 
     <div class="mt-6 flex flex-col gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-6 text-sm text-[var(--color-muted)]">
@@ -71,20 +81,31 @@ const e = Astro.url.searchParams.get('e');
   <script>
     (function () {
       var node = document.getElementById('sent-alert');
-      if (!(node instanceof HTMLElement)) return;
-      var alertEl = node;
-      // Auto dismiss after 4s with a small fade
-      setTimeout(function () {
-        alertEl.style.transition = 'opacity 200ms ease';
-        alertEl.style.opacity = '0';
-        setTimeout(function () { alertEl.remove(); }, 240);
-      }, 4000);
-      // Clean the URL so refreshing doesn't re-show the banner
-      try {
-        var url = new URL(window.location.href);
-        url.searchParams.delete('sent');
-        window.history.replaceState({}, document.title, url.toString());
-      } catch (_) {}
+      if (node instanceof HTMLElement) {
+        var alertEl = node;
+        setTimeout(function () {
+          alertEl.style.transition = 'opacity 200ms ease';
+          alertEl.style.opacity = '0';
+          setTimeout(function () { alertEl.remove(); }, 240);
+        }, 4000);
+        try {
+          var url = new URL(window.location.href);
+          url.searchParams.delete('sent');
+          window.history.replaceState({}, document.title, url.toString());
+        } catch (_) {}
+      }
+
+      var form = document.getElementById('contact-form');
+      if (form instanceof HTMLFormElement) {
+        form.addEventListener('submit', function (event) {
+          event.preventDefault();
+          var warning = document.getElementById('manual-api-warning');
+          if (warning instanceof HTMLElement) {
+            warning.hidden = false;
+            warning.focus({ preventScroll: true });
+          }
+        });
+      }
     })();
   </script>
 </Base>

@@ -85,6 +85,8 @@ export const en: Namespaced = {
     error_auth: "Auth failed. Check MAIL_USER/MAIL_PASS.",
     error_conn: "Connection failed. Check network/port 465.",
     error_retry: "Please try again.",
+    manual_notice_title: "API setup required",
+    manual_notice_body: "This button does not send emails yet. Please implement your own backend API to handle submissions.",
     privacy_notice: "We only use your message to reply. Nothing else.",
     privacy_detail: "Submitting means you agree to be contacted about this request.",
     mailto_label: "Email me directly",

@@ -1,5 +1,51 @@
 ---
-// Middleware handles redirect to /en. This page is a fallback.
----
-<meta http-equiv="refresh" content="0; url=/en" />
+import { defaultLocale } from "@/lib/i18n";
 
+const zhPath = "/zh";
+const enPath = "/en";
+const toAbsolute = (path: string): string => (Astro.site ? new URL(path, Astro.site).toString() : path);
+const zhUrl = toAbsolute(zhPath);
+const enUrl = toAbsolute(enPath);
+const fallbackUrl = zhUrl;
+const canonicalUrl = Astro.site ? Astro.site.toString() : "/";
+---
+<!DOCTYPE html>
+<html lang={defaultLocale}>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={canonicalUrl} />
+    <script is:inline data-zh={zhUrl} data-en={enUrl}>
+      (function () {
+        var script = document.currentScript;
+        if (!script) return;
+        var zh = script.dataset.zh || "";
+        var en = script.dataset.en || "";
+        var fallback = zh || en || "/";
+        try {
+          const langs = Array.from(navigator.languages || []);
+          const primary = (navigator.language || "").toLowerCase();
+          if (primary) langs.unshift(primary);
+          const prefersZh = langs.some((lang) => lang && lang.toLowerCase().startsWith("zh"));
+          var destination = prefersZh ? zh || fallback : en || fallback;
+          if (window.location.href !== destination) {
+            window.location.replace(destination);
+          }
+        } catch (_) {
+          if (fallback && window.location.href !== fallback) {
+            window.location.replace(fallback);
+          }
+        }
+      })();
+    </script>
+    <noscript>
+      <meta http-equiv="refresh" content={`0;url=${fallbackUrl}`} />
+    </noscript>
+  </head>
+  <body>
+    <p>
+      Redirecting from <code>/</code> to <a href={fallbackUrl}>{fallbackUrl}</a>
+    </p>
+  </body>
+</html>
