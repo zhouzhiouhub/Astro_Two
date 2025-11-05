@@ -21,6 +21,7 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
     "/icons/",
     "/og/",
     "/_image/",
+    "/pagefind/",
   ];
   const STATIC_EXTS = [
     ".svg",

@@ -25,6 +25,8 @@ export const zh: Namespaced = {
     cookie_decline: "拒绝",
     sr_home: "首页",
     search: "搜索",
+    search_loading: "正在加载搜索索引…",
+    search_missing: "尚未找到搜索索引，请执行 npm run build 生成 Pagefind 资源。",
     toggle_theme: "切换主题",
     privacy: "隐私政策",
     terms: "条款与条件",

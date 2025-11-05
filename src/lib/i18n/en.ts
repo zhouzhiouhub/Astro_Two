@@ -25,6 +25,8 @@ export const en: Namespaced = {
     cookie_decline: "Decline",
     sr_home: "Home",
     search: "Search",
+    search_loading: "Preparing search…",
+    search_missing: "Search index not found. Run npm run build to generate Pagefind assets.",
     toggle_theme: "Toggle Theme",
     privacy: "Privacy Policy",
     terms: "Terms & Conditions",
