@@ -1,20 +1,21 @@
 import type { MiddlewareHandler } from "astro";
-import { defaultLocale, isLocale, negotiateLocale } from "@/lib/i18n";
 import { initAuthExpiryNotifier } from "@/lib/authExpiryNotifier";
+// 如需保留语言工具，仅用于后续功能：
+// import { defaultLocale, isLocale, negotiateLocale } from "@/lib/i18n";
 
 export const onRequest: MiddlewareHandler = async (context, next) => {
-  // Ensure the notifier is set up once when the server handles the first request
+  // 启动一次性通知器
   initAuthExpiryNotifier();
+
   const { url } = context;
   const { pathname } = url;
 
-  // Do not locale-redirect API routes
+  // 1) 放行 API
   if (pathname === "/api" || pathname.startsWith("/api/")) {
     return next();
   }
 
-  // Skip redirects for static assets and framework internals
-  // e.g. /favicon.ico, /logo.svg, /robots.txt, /assets/*, /_astro/*, etc.
+  // 2) 放行静态资源与框架内部路径
   const STATIC_PREFIXES = [
     "/_astro/",
     "/assets/",
@@ -24,27 +25,9 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
     "/pagefind/",
   ];
   const STATIC_EXTS = [
-    ".svg",
-    ".png",
-    ".jpg",
-    ".jpeg",
-    ".webp",
-    ".gif",
-    ".ico",
-    ".txt",
-    ".xml",
-    ".json",
-    ".css",
-    ".js",
-    ".mjs",
-    ".map",
-    ".woff",
-    ".woff2",
-    ".ttf",
-    ".otf",
-    ".eot",
-    ".mp4",
-    ".webm",
+    ".svg",".png",".jpg",".jpeg",".webp",".gif",".ico",
+    ".txt",".xml",".json",".css",".js",".mjs",".map",
+    ".woff",".woff2",".ttf",".otf",".eot",".mp4",".webm",
   ];
   const isStatic =
     STATIC_PREFIXES.some((p) => pathname.startsWith(p)) ||
@@ -56,16 +39,8 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
     return next();
   }
 
-  if (pathname === "/") {
-    // Negotiate locale from Accept-Language, fallback to default
-    const best = negotiateLocale(context.request.headers.get("accept-language"));
-    return context.redirect(`/${best}`, 307);
-  }
-
-  const seg = pathname.split("/").filter(Boolean)[0];
-  if (!seg || !isLocale(seg)) {
-    return context.redirect(`/${defaultLocale}${pathname}`, 307);
-  }
-
+  // 3) 不做任何语言重定向：根路径与其它路径都直接放行
+  //    让 / 走你新的 index.astro 语言选择页
+  //    让 /zh /en 等页面按常规路由工作
   return next();
 };

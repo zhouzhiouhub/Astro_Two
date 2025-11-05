@@ -75,8 +75,21 @@ const visibleNotes = allNotes.filter((note) => {
       {visibleNotes.length === 0 && (
         <div class="text-sm text-[var(--color-muted)]">{t('notes','empty', lang)}</div>
       )}
-      {visibleNotes.map((note) => (
-        <article class="card flex h-full flex-col gap-4 p-6">
+      {visibleNotes.map((note) => {
+        const anchorId = `${note.id}-${lang}`;
+        const description = note.summary;
+        const keywords = [note.title, note.summary, note.tags.join(' '), note.updatedAt].join(' ');
+        return (
+        <article
+          id={anchorId}
+          data-search-item
+          data-search-title={note.title}
+          data-search-anchor={anchorId}
+          data-search-description={description}
+          data-search-keywords={keywords}
+          data-search-link={note.link ?? ''}
+          class="card flex h-full flex-col gap-4 p-6"
+        >
           <div class="flex items-center justify-between text-xs text-[var(--color-muted)]">
             <span>{t('notes','updated_label', lang)} {note.updatedAt}</span>
             <div class="flex flex-wrap gap-2">
@@ -96,7 +109,7 @@ const visibleNotes = allNotes.filter((note) => {
             </a>
           )}
         </article>
-      ))}
+      );})}
     </section>
     <Footer lang={lang} />
   </main>

@@ -71,6 +71,8 @@ const structuredData = {
   },
   url: canonicalUrl,
 };
+const articleAnchor = `${slug}-${lang}-article`;
+const summaryText = entry.data.summary ?? desc ?? '';
 ---
 <Base title={title} desc={desc} url={url} lang={lang} type="article" image={coverUrl} canonical={canonicalUrl} structuredData={structuredData}>
   <Header lang={lang} />
@@ -80,7 +82,15 @@ const structuredData = {
       <SearchButton lang={lang} />
     </div>
 
-    <article class="prose prose-neutral max-w-none dark:prose-invert">
+    <article
+      id={articleAnchor}
+      data-search-item
+      data-search-title={title}
+      data-search-anchor={articleAnchor}
+      data-search-description={summaryText}
+      data-search-keywords={[title, summaryText].join(' ')}
+      class="prose prose-neutral max-w-none dark:prose-invert"
+    >
       <div class="overflow-hidden rounded-3xl border border-[var(--color-border)]">
         <img src={cover} alt={coverAlt} loading="lazy" class="h-72 w-full object-cover" />
       </div>
