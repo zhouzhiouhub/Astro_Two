@@ -1,11 +1,19 @@
 name: Deploy Astro site to Pages
+
 on:
   push:
-    branches: [ main ]  # 当 main 分支有更新时就自动部署
+    branches: [ main ]
+  workflow_dispatch:
+
 permissions:
   contents: read
   pages: write
   id-token: write
+
+# 防止并发部署互相打架
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -13,18 +21,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
+
       - name: Install dependencies
         run: npm install
+        # 如果你项目用 pnpm 或 yarn，改成 pnpm install / yarn install
+
       - name: Build
         run: npm run build
+        # 如果 Astro 的输出不是 dist，请把下面 path 改掉
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+          # 若使用 adapter-static 以外导致输出到 .output/public，请改为:
+          # path: .output/public
 
   deploy:
     needs: build
@@ -33,6 +49,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
