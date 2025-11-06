@@ -11,6 +11,7 @@ export interface AboutSection {
   contactSummary: string;
   resumeLabel: string;
   resumeUrl: string;
+  photoSrc: string;
   photoAlt: string;
 }
 
@@ -42,6 +43,7 @@ export const aboutContent: AboutContentMap = {
     contactSummary: "Let’s collaborate on human-centred tools, lighting, or creative coding projects.",
     resumeLabel: "Download résumé (PDF)",
     resumeUrl: "",
+    photoSrc: "/images/work/work.png",
     photoAlt: "Portrait of Mr. Zhou in the studio",
   },
   zh: {
@@ -69,6 +71,7 @@ export const aboutContent: AboutContentMap = {
     contactSummary: "欢迎一起探索以人为本的工具、灯光项目与创意编程。",
     resumeLabel: "下载简历（PDF）",
     resumeUrl: "",
+    photoSrc: "/images/work/work.png",
     photoAlt: "Mr. Zhou 在工作室的照片",
   },
 };
