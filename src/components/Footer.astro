@@ -8,12 +8,15 @@ import weiboSvg from '@/assets/weibo-fill.svg?raw';
 import linkedinSvg from '@/assets/cib-linkedin.svg?raw';
 import xSvg from '@/assets/twitter.svg?raw';
 import facebookSvg from '@/assets/facebook.svg?raw';
+import emailSvg from '@/assets/email.svg?raw';
 import { t } from '@/lib/i18n';
 import { localeHref, withBase } from '@/lib/url';
 
 const { lang = 'en' } = Astro.props as { lang?: string };
 const year = new Date().getFullYear();
 const icp = (import.meta as any).env?.SITE_ICP as string | undefined;
+const mailUser = (import.meta as any).env?.MAIL_USER as string | undefined;
+const emailHref = mailUser ? `mailto:${mailUser}` : 'mailto:your-email@example.com';
 const localized = {
   home: localeHref(lang),
   blog: localeHref(lang, '/blog'),
@@ -59,6 +62,7 @@ function normalizeSvg(raw: string) {
 }
 
 const links = [
+  { label: 'Email', svg: normalizeSvg(emailSvg), href: emailHref, scale: 0.92 },
   { label: 'QQ', svg: normalizeSvg(qqSvg), href: '#', scale: 0.9 },
   { label: 'WeChat', svg: normalizeSvg(wechatSvg), href: '#', scale: 0.9 },
   { label: 'Discord', svg: normalizeSvg(discordSvg), href: '#', scale: 0.9 },
