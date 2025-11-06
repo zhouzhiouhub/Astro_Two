@@ -93,6 +93,13 @@ const xDefaultAlternate = finalAlternates.find((alt) => alt.lang === defaultLoca
 <!doctype html>
 <html lang={lang} data-pagefind-filter={`language:${lang}`}>
   <head>
+    <!-- Language Detection Core Module (must be loaded first) -->
+    <script is:inline src="/lang-detect-core.js"></script>
+    
+    <!-- Auto Language Redirect (runs immediately after core) -->
+    <script is:inline src="/lang-auto-redirect.js"></script>
+    
+    <!-- Theme Detection (original script) -->
     <script is:inline>
       try {
         const key = 'theme';

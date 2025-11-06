@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>语言检测测试页面 - Language Detection Test</title>
+  
+  <!-- Load Language Detection Core -->
+  <script src="/lang-detect-core.js"></script>
+  
+  <!-- Load Debug Panel for Testing -->
+  <script src="/lang-debug-panel.js"></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    h1 {
+      font-size: 32px;
+      margin-bottom: 16px;
+      color: #667eea;
+    }
+    
+    h2 {
+      font-size: 24px;
+      margin: 24px 0 16px;
+      color: #764ba2;
+    }
+    
+    .test-group {
+      margin: 20px 0;
+    }
+    
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin: 8px 8px 8px 0;
+    }
+    
+    button:hover {
+      background: #764ba2;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    button.secondary {
+      background: #6c757d;
+    }
+    
+    button.secondary:hover {
+      background: #5a6268;
+    }
+    
+    .info {
+      background: #e8f4f8;
+      border-left: 4px solid #0dcaf0;
+      padding: 16px;
+      margin: 16px 0;
+      border-radius: 4px;
+    }
+    
+    .success {
+      background: #d1e7dd;
+      border-left: 4px solid #198754;
+      padding: 16px;
+      margin: 16px 0;
+      border-radius: 4px;
+    }
+    
+    .warning {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 16px;
+      margin: 16px 0;
+      border-radius: 4px;
+    }
+    
+    code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+    }
+    
+    pre {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    
+    .result {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 12px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #667eea;
+      color: white;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    
+    .link-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 16px 0;
+    }
+    
+    .link-group a {
+      display: inline-block;
+      padding: 10px 20px;
+      background: white;
+      border: 2px solid #667eea;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .link-group a:hover {
+      background: #667eea;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>🌐 语言检测系统测试页面</h1>
+      <p>这是一个用于测试语言自动检测功能的页面。右上角会显示检测信息调试面板。</p>
+      
+      <div class="info">
+        <strong>ℹ️ 提示：</strong> 本页面会自动显示调试面板，展示当前的语言检测信息。
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📊 当前状态</h2>
+      <div id="current-status" class="result">正在加载...</div>
+      <button onclick="refreshStatus()">🔄 刷新状态</button>
+    </div>
+
+    <div class="card">
+      <h2>🧪 功能测试</h2>
+      
+      <div class="test-group">
+        <h3>1. 语言切换测试</h3>
+        <p>点击按钮设置语言偏好并重新加载页面：</p>
+        <button onclick="setLang('en')">切换到 English</button>
+        <button onclick="setLang('zh')">切换到 中文</button>
+        <button onclick="clearLang()" class="secondary">清除语言偏好</button>
+      </div>
+
+      <div class="test-group">
+        <h3>2. 页面跳转测试</h3>
+        <p>测试不同语言版本页面之间的跳转：</p>
+        <div class="link-group">
+          <a href="/en">英文首页</a>
+          <a href="/zh">中文首页</a>
+          <a href="/en/about">英文关于</a>
+          <a href="/zh/about">中文关于</a>
+        </div>
+      </div>
+
+      <div class="test-group">
+        <h3>3. API 测试</h3>
+        <p>测试核心 API 功能：</p>
+        <button onclick="testAPIs()">运行 API 测试</button>
+        <div id="api-results"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📝 使用说明</h2>
+      
+      <div class="success">
+        <strong>✅ 自动重定向已启用</strong><br>
+        访问任何页面时，系统会自动检测您的浏览器语言并跳转到对应版本。
+      </div>
+
+      <h3>优先级规则：</h3>
+      <ol>
+        <li><strong>用户手动选择</strong> (localStorage) - 最高优先级</li>
+        <li><strong>浏览器语言</strong> (navigator.languages) - 首次访问时使用</li>
+        <li><strong>默认语言</strong> (zh) - 兜底方案</li>
+      </ol>
+
+      <div class="warning">
+        <strong>⚠️ 注意：</strong> 手动在 URL 中访问不同语言版本不会自动保存偏好。只有通过语言切换器或测试按钮切换才会保存。
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>💻 开发者工具</h2>
+      
+      <h3>控制台命令：</h3>
+      <pre>// 查看所有浏览器语言
+LangDetectCore.LangDetector.getAllBrowserLangs()
+
+// 获取检测到的浏览器语言
+LangDetectCore.LangDetector.getBrowserLang()
+
+// 获取存储的语言偏好
+LangDetectCore.LangDetector.getStoredLang()
+
+// 获取目标语言
+LangDetectCore.LangDetector.getTargetLang()
+
+// 设置语言偏好
+LangDetectCore.LangDetector.setStoredLang('en')
+
+// 构建带语言前缀的路径
+LangDetectCore.URLService.buildPathWithLang('zh', '/about')</pre>
+    </div>
+
+    <div class="card">
+      <h2>🔗 相关链接</h2>
+      <div class="link-group">
+        <a href="/">根路径（会自动重定向）</a>
+        <a href="/LANG_DETECTION_GUIDE.md" target="_blank">完整文档</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Refresh status display
+    function refreshStatus() {
+      if (typeof LangDetectCore === 'undefined') {
+        document.getElementById('current-status').innerHTML = 
+          '<span style="color: red;">❌ 错误：LangDetectCore 未加载</span>';
+        return;
+      }
+
+      const { LangDetector } = LangDetectCore;
+      
+      const status = {
+        browserLangs: LangDetector.getAllBrowserLangs(),
+        browserLang: LangDetector.getBrowserLang(),
+        storedLang: LangDetector.getStoredLang(),
+        currentLang: LangDetector.getLangFromPath(),
+        targetLang: LangDetector.getTargetLang(),
+      };
+
+      document.getElementById('current-status').innerHTML = `
+<strong>浏览器语言列表：</strong> ${status.browserLangs.join(', ')}<br>
+<strong>检测到的浏览器语言：</strong> ${status.browserLang || '(无)'}<br>
+<strong>存储的语言偏好：</strong> ${status.storedLang || '(无)'} ${status.storedLang ? '<span class="badge">已保存</span>' : ''}<br>
+<strong>当前 URL 语言：</strong> ${status.currentLang || '(无)'}<br>
+<strong>目标语言：</strong> ${status.targetLang} <span class="badge">优先使用</span>
+      `;
+    }
+
+    // Set language preference
+    function setLang(lang) {
+      if (typeof LangDetectCore === 'undefined') {
+        alert('错误：LangDetectCore 未加载');
+        return;
+      }
+
+      LangDetectCore.LangDetector.setStoredLang(lang);
+      alert(`✅ 语言偏好已设置为: ${lang}\n\n页面将重新加载以应用更改。`);
+      location.reload();
+    }
+
+    // Clear language preference
+    function clearLang() {
+      localStorage.removeItem('lang');
+      alert('✅ 语言偏好已清除\n\n页面将重新加载，使用浏览器语言设置。');
+      location.reload();
+    }
+
+    // Test APIs
+    function testAPIs() {
+      if (typeof LangDetectCore === 'undefined') {
+        alert('错误：LangDetectCore 未加载');
+        return;
+      }
+
+      const { LangDetector, URLService } = LangDetectCore;
+      const results = [];
+
+      // Test language detection
+      results.push(`✅ extractPrimaryLang('zh-CN'): ${LangDetector.extractPrimaryLang('zh-CN')}`);
+      results.push(`✅ extractPrimaryLang('en-US'): ${LangDetector.extractPrimaryLang('en-US')}`);
+      results.push(`✅ extractPrimaryLang('fr-FR'): ${LangDetector.extractPrimaryLang('fr-FR')} (不支持)`);
+      
+      // Test URL building
+      results.push(`✅ buildPathWithLang('zh', '/about'): ${URLService.buildPathWithLang('zh', '/about')}`);
+      results.push(`✅ buildPathWithLang('en', '/zh/blog'): ${URLService.buildPathWithLang('en', '/zh/blog')}`);
+      
+      // Test path extraction
+      results.push(`✅ getLangFromPath('/zh/about'): ${LangDetector.getLangFromPath('/zh/about')}`);
+      results.push(`✅ getLangFromPath('/about'): ${LangDetector.getLangFromPath('/about') || '(null)'}`);
+
+      document.getElementById('api-results').innerHTML = `
+        <div class="result">
+          ${results.join('<br>')}
+        </div>
+      `;
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      refreshStatus();
+      console.log('🧪 测试页面已加载');
+      console.log('💡 提示：打开控制台查看更多调试信息');
+    });
+  </script>
+</body>
+</html>
+

@@ -1,24 +1,71 @@
 ---
-import { defaultLocale } from "@/lib/i18n";
+import { SUPPORTED_LOCALES, defaultLocale } from "@/lib/i18n";
+export const prerender = true;
 ---
 
 <!DOCTYPE html>
 <html lang={defaultLocale}>
-  <head>
-    <meta charset="utf-8" />
-    <title>选择语言 | Astro Two</title>
-  </head>
-  <body style="font-family: system-ui; padding: 2rem; line-height: 1.8;">
-    <h1>欢迎来到 Astro Two 👋</h1>
-    <p>请选择语言：</p>
-
-    <ul style="list-style: none; padding-left: 0;">
-      <li><a href="/zh/">进入中文</a></li>
-      <li><a href="/en/">Enter English</a></li>
-    </ul>
-
-    <p style="margin-top: 2rem; opacity: 0.7;">
-      （不再根据浏览器语言自动跳转）
-    </p>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title></title>
+  
+  <!-- Language Detection Core Module -->
+  <script is:inline src="/lang-detect-core.js"></script>
+  
+  <!-- Root Path Redirect -->
+  <script is:inline>
+    // Root path redirect - immediate and silent
+    (function() {
+      'use strict';
+      
+      try {
+        if (typeof LangDetectCore === 'undefined') {
+          throw new Error('LangDetectCore not loaded');
+        }
+        
+        const { LangDetector } = LangDetectCore;
+        const targetLang = LangDetector.getTargetLang();
+        window.location.replace('/' + targetLang);
+      } catch (error) {
+        // Fallback: minimal redirect logic
+        var stored = null;
+        try { stored = localStorage.getItem('lang'); } catch {}
+        var supported = ['en', 'zh'];
+        var def = 'zh';
+        
+        if (stored && supported.indexOf(stored) !== -1) {
+          window.location.replace('/' + stored);
+          return;
+        }
+        
+        var langs = navigator.languages || [navigator.language];
+        for (var i = 0; i < langs.length; i++) {
+          var primary = String(langs[i] || '').toLowerCase().split('-')[0];
+          if (supported.indexOf(primary) !== -1) {
+            window.location.replace('/' + primary);
+            return;
+          }
+        }
+        window.location.replace('/' + def);
+      }
+    })();
+  </script>
+  
+  <!-- Fallback meta redirect if JavaScript is disabled -->
+  <meta http-equiv="refresh" content="0; url=/{defaultLocale}">
+</head>
+<body style="margin: 0; background: #fff;">
+  <!-- Silent redirect, no visible content -->
+  
+  <!-- Fallback for no JavaScript -->
+  <noscript>
+    <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; padding: 32px;">
+      <p style="margin: 0 0 16px; color: #333; font-family: system-ui, -apple-system, sans-serif;">Please select your language:</p>
+      <a href="/en" style="display: inline-block; margin: 8px; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 6px; font-family: system-ui, -apple-system, sans-serif;">English</a>
+      <a href="/zh" style="display: inline-block; margin: 8px; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 6px; font-family: system-ui, -apple-system, sans-serif;">中文</a>
+    </div>
+  </noscript>
+</body>
 </html>
