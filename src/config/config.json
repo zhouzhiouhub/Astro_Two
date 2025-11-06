@@ -1,10 +1,10 @@
 {
   "site": {
-    "base_url": "https://zhouzhiouhub.github.io/Astro_Two",
-    "base_path": "/Astro_Two/",
     "trailing_slash": false,
     "title": "zhouzhiou",
-    "description": "Exploring frontier technology, design, and personal projects."
+    "description": "Exploring frontier technology, design, and personal projects.",
+    "github_repo": "Astro_Two",
+    "github_user": "zhouzhiouhub"
   }
 }
 
