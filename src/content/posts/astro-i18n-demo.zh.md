@@ -7,7 +7,7 @@ date: 2025-10-23
 tags: [astro, i18n, content]
 summary: "完整拆解 Astro 多语言站点实践：配置路由、维护共享字典、渲染中英文文章，并在不牺牲性能的前提下输出 hreflang、Accept-Language 等 SEO 元数据。"
 cover:
-  src: "/og/blog-astro-i18n.svg"
+  src: "./media/blog-astro-i18n.svg"
   alt: "Astro 多语言路由流程图"
 canonical: "https://zhouzhiou.com/zh/blog/astro-i18n-demo"
 related: ["astro-keywords"]

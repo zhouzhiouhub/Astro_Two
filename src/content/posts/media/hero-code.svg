@@ -1,0 +1,61 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0D1220" />
+      <stop offset="1" stop-color="#1A2238" />
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#151F33" />
+      <stop offset="1" stop-color="#1F2B45" />
+    </linearGradient>
+    <linearGradient id="cta" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5B8CFF" />
+      <stop offset="1" stop-color="#AA5BFF" />
+    </linearGradient>
+    <filter id="shadow" x="-80" y="-80" width="1360" height="960" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="40" stdDeviation="64" flood-color="#050915" flood-opacity="0.55" />
+    </filter>
+  </defs>
+  <rect width="1200" height="800" rx="36" fill="url(#bg)" />
+
+  <g filter="url(#shadow)">
+    <rect x="140" y="140" width="520" height="360" rx="26" fill="url(#panel)" stroke="#24304E" stroke-width="2" />
+    <rect x="168" y="178" width="120" height="12" rx="6" fill="#2C3A5A" />
+    <rect x="302" y="178" width="60" height="12" rx="6" fill="#2C3A5A" />
+    <rect x="374" y="178" width="90" height="12" rx="6" fill="#2C3A5A" />
+
+    <g transform="translate(170 220)" font-family="'JetBrains Mono', 'Fira Code', monospace" font-size="22" letter-spacing="0.01em">
+      <text fill="#6678A2">// astro.config.mjs</text>
+      <text y="48" fill="#5B8CFF">import</text>
+      <text x="110" y="48" fill="#9FB2E0">{ defineConfig }</text>
+      <text x="320" y="48" fill="#5B8CFF">from</text>
+      <text x="404" y="48" fill="#9FB2E0">"astro/config"</text>
+
+      <text y="96" fill="#5B8CFF">import</text>
+      <text x="110" y="96" fill="#9FB2E0">qtBridge</text>
+      <text x="232" y="96" fill="#5B8CFF">from</text>
+      <text x="316" y="96" fill="#9FB2E0">"@zhou/qt"</text>
+
+      <text y="144" fill="#5B8CFF">import</text>
+      <text x="110" y="144" fill="#9FB2E0">openrgb</text>
+      <text x="232" y="144" fill="#5B8CFF">from</text>
+      <text x="316" y="144" fill="#9FB2E0">"@zhou/openrgb"</text>
+
+      <text y="200" fill="#9FB2E0">export default defineConfig({</text>
+      <text x="40" y="240" fill="#80A4FF">integrations:</text>
+      <text x="220" y="240" fill="#9FB2E0">[qtBridge(), openrgb()],</text>
+      <text x="40" y="280" fill="#80A4FF">buildTarget:</text>
+      <text x="220" y="280" fill="#9FB2E0">"hybrid-lab",</text>
+      <text y="320" fill="#9FB2E0">});</text>
+    </g>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="680" y="300" width="370" height="260" rx="26" fill="#121C30" stroke="#24304E" stroke-width="2" />
+    <text x="710" y="360" fill="#5B8CFF" font-family="'Inter', sans-serif" font-weight="600" font-size="30">Astro · Qt · OpenRGB</text>
+    <text x="710" y="404" fill="#A7B7D8" font-family="'Inter', sans-serif" font-size="18" opacity="0.9">Code experiments for lighting + UI workflows</text>
+    <rect x="710" y="440" width="210" height="56" rx="28" fill="url(#cta)" />
+    <text x="740" y="475" fill="#0B0D12" font-family="'Inter', sans-serif" font-weight="600" font-size="20">Build. Document. Share.</text>
+  </g>
+</svg>
+

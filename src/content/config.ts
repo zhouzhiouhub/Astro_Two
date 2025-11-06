@@ -12,7 +12,7 @@ const faq = defineCollection({
 // Blog posts collection with simple locale-aware schema
 const posts = defineCollection({
   type: 'content',
-  schema: z.object({
+  schema: ({ image }) => z.object({
     locale: z.enum(['en','zh']),
     slugBase: z.string(),
     title: z.string(),
@@ -21,7 +21,7 @@ const posts = defineCollection({
     tags: z.array(z.string()).default([]),
     summary: z.string().min(40).max(600),
     cover: z.object({
-      src: z.string(),
+      src: image(),
       alt: z.string(),
     }).optional(),
     canonical: z.string().url().optional(),

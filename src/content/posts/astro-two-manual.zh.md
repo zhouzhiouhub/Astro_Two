@@ -7,7 +7,7 @@ date: 2025-11-05
 tags: [astro, guide, handbook]
 summary: "从本地开发到多语言扩展、API 部署、Pagefind 搜索和邮件系统配置，手把手梳理 Astro Two 项目的使用方法，帮助你快速定制自己的站点。"
 cover:
-  src: "/og/hero-code.svg"
+  src: "./media/hero-code.svg"
   alt: "Astro Two 项目结构与工具示意"
 related: ["astro-i18n-demo", "astro-keywords"]
 ---

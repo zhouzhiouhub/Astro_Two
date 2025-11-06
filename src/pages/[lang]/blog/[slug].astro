@@ -32,8 +32,10 @@ const dateVal = entry.data.date;
 const date = typeof dateVal === 'string' ? dateVal : new Date(dateVal).toISOString().slice(0,10);
 const words = (entry.body ?? '').split(/\s+/).filter(Boolean).length;
 const readingMinutes = Math.max(1, Math.round(words / 220));
-const cover = withBase(entry.data.cover?.src ?? '/og/default.svg');
+const coverAsset = entry.data.cover?.src;
+const cover = coverAsset ? withBase(coverAsset.src) : withBase('/og/default.svg');
 const coverAlt = entry.data.cover?.alt ?? entry.data.title;
+const coverDimensions = coverAsset ? { width: coverAsset.width, height: coverAsset.height } : undefined;
 const canonical = entry.data.canonical ?? url;
 const siteOrigin = Astro.site ?? (url ? new URL(url).origin : undefined);
 const toAbsolute = (value: string) => {
@@ -94,7 +96,7 @@ const postHref = (slugBase: string) => localeHref(lang, `/blog/${slugBase}`);
       class="prose prose-neutral max-w-none dark:prose-invert"
     >
       <div class="overflow-hidden rounded-3xl border border-[var(--color-border)]">
-        <img src={cover} alt={coverAlt} loading="lazy" class="h-72 w-full object-cover" />
+        <img src={cover} alt={coverAlt} loading="lazy" width={coverDimensions?.width} height={coverDimensions?.height} class="h-72 w-full object-cover" />
       </div>
       <h1 class="mt-8">{title}</h1>
       <p class="mt-2 text-[var(--color-muted)] text-sm flex items-center gap-3">
@@ -137,11 +139,12 @@ const postHref = (slugBase: string) => localeHref(lang, `/blog/${slugBase}`);
           {relatedPosts.map((post: PostEntry) => {
             const d = typeof post.data.date === 'string' ? post.data.date : new Date(post.data.date).toISOString().slice(0,10);
             const summary = post.data.summary ?? post.data.description;
-            const coverSrc = withBase(post.data.cover?.src ?? '/og/default.svg');
+            const coverAsset = post.data.cover?.src;
+            const coverSrc = coverAsset ? withBase(coverAsset.src) : withBase('/og/default.svg');
             const coverAltText = post.data.cover?.alt ?? post.data.title;
             return (
               <a href={postHref(post.data.slugBase)} class="group flex overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] transition hover:-translate-y-0.5 hover:border-[var(--color-primary)]">
-                <img src={coverSrc} alt={coverAltText} loading="lazy" class="h-full w-24 object-cover md:w-40" />
+                <img src={coverSrc} alt={coverAltText} loading="lazy" width={coverAsset?.width} height={coverAsset?.height} class="h-full w-24 object-cover md:w-40" />
                 <div class="flex flex-col gap-2 p-4">
                   <time datetime={d} class="text-xs text-[var(--color-muted)]">{d}</time>
                   <div class="text-lg font-semibold leading-tight">{post.data.title}</div>

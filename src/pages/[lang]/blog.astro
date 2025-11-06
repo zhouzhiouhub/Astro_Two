@@ -87,7 +87,8 @@ const postHref = (slug: string) => localeHref(lang, `/blog/${slug}`);
       )}
       {visiblePosts.map((post) => {
         const d = typeof post.data.date === 'string' ? post.data.date : new Date(post.data.date).toISOString().slice(0,10);
-        const cover = withBase(post.data.cover?.src ?? '/og/default.svg');
+        const coverAsset = post.data.cover?.src;
+        const cover = coverAsset ? withBase(coverAsset.src) : withBase('/og/default.svg');
         const alt = post.data.cover?.alt ?? post.data.title;
         const summary = post.data.summary ?? post.data.description ?? '';
         const articleId = `${post.data.slugBase}-${lang}`;
@@ -104,7 +105,7 @@ const postHref = (slug: string) => localeHref(lang, `/blog/${slug}`);
             class="group flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] transition hover:-translate-y-0.5 hover:border-[var(--color-primary)]"
           >
             <a href={postHref(post.data.slugBase)} class="block overflow-hidden">
-              <img src={cover} alt={alt} loading="lazy" class="h-48 w-full object-cover transition duration-300 group-hover:scale-105" />
+              <img src={cover} alt={alt} loading="lazy" width={coverAsset?.width} height={coverAsset?.height} class="h-48 w-full object-cover transition duration-300 group-hover:scale-105" />
             </a>
             <div class="flex h-full flex-col gap-4 p-5">
               <div class="flex flex-wrap items-center gap-3 text-xs text-[var(--color-muted)]">

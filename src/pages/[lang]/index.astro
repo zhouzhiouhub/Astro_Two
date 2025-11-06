@@ -69,12 +69,13 @@ const notes = notesByLocale[lang].slice(0, 3);
       <div class="mt-6 grid gap-6 md:grid-cols-3">
         {posts.map((post) => {
           const date = typeof post.data.date === 'string' ? post.data.date : new Date(post.data.date).toISOString().slice(0, 10);
-          const cover = withBase(post.data.cover?.src ?? '/og/default.svg');
+          const coverAsset = post.data.cover?.src;
+          const cover = coverAsset ? withBase(coverAsset.src) : withBase('/og/default.svg');
           const alt = post.data.cover?.alt ?? post.data.title;
           return (
             <article class="card flex h-full flex-col overflow-hidden">
               <a href={postLink(post.data.slugBase)} class="block">
-                <img src={cover} alt={alt} loading="lazy" class="h-40 w-full object-cover" />
+                <img src={cover} alt={alt} loading="lazy" width={coverAsset?.width} height={coverAsset?.height} class="h-40 w-full object-cover" />
               </a>
               <div class="flex flex-1 flex-col gap-3 p-5">
                 <time datetime={date} class="text-xs text-[var(--color-muted)]">{date}</time>

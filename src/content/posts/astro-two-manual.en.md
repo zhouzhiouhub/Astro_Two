@@ -7,7 +7,7 @@ date: 2025-11-05
 tags: [astro, guide, handbook]
 summary: "Walk through Astro Two from local development to multilingual expansion, Pagefind search, contact API, and production deployment so you can adapt the project to your own site."
 cover:
-  src: "/og/hero-code.svg"
+  src: "./media/hero-code.svg"
   alt: "Astro Two project architecture overview"
 related: ["astro-i18n-demo", "astro-keywords"]
 ---
