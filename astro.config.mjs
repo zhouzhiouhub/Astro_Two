@@ -1,27 +1,90 @@
-import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
-import sitemap from '@astrojs/sitemap';
+import mdx from "@astrojs/mdx";
+import react from "@astrojs/react";
+import sitemap from "@astrojs/sitemap";
+import tailwind from "@astrojs/tailwind";
+import { defineConfig } from "astro/config";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypeSlug from "rehype-slug";
+import remarkCollapse from "remark-collapse";
+import remarkToc from "remark-toc";
+import { remarkModifiedTime } from "./remark-modified-time.mjs";
+import config from "./src/config/config.json" with { type: "json" };
 
-const target = process.env.DEPLOY_TARGET || 'prod';
-const isGitHubPages = target === 'gh';
-
-const siteFromEnv = process.env.SITE_URL?.replace(/\/$/, '');
-const baseFromEnv = process.env.SITE_BASE ?? undefined;
-
-const site = siteFromEnv || (isGitHubPages ? 'https://zhouzhiouhub.github.io' : undefined);
-const base = baseFromEnv || (isGitHubPages ? '/Astro_Two/' : '/');
-
+// https://astro.build/config
 export default defineConfig({
-  site,
-  base,
-  alias: {
-    '@': './src',
+  site: config.site.base_url ? config.site.base_url : "http://examplesite.com",
+  base: config.site.base_path ? config.site.base_path : "/",
+  trailingSlash: config.site.trailing_slash ? "always" : "never",
+
+  // Pure static output - no SSR or server endpoints needed
+  output: "static",
+
+  // Image optimization uses Sharp service by default in Astro 4.x
+  image: {
+    service: {
+      entrypoint: "astro/assets/services/sharp",
+    },
   },
-  integrations: [tailwind({ applyBaseStyles: false }), sitemap()],
-  prefetch: true,
-  i18n: {
-    locales: ['en', 'zh'],
-    defaultLocale: 'zh',
-    routing: 'manual',
+
+  // Vite configuration
+  vite: {
+    build: {
+      // Optimize chunks for better caching
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'react-vendor': ['react', 'react-dom'],
+            'aos-vendor': ['aos']
+          }
+        }
+      }
+    }
+  },
+
+  integrations: [
+    react(),
+    tailwind({
+      applyBaseStyles: false, // We have custom base styles in src/styles/tailwind.css
+    }),
+    sitemap({
+      i18n: {
+        defaultLocale: 'en',
+        locales: {
+          en: 'en-US',
+          zh: 'zh-CN',
+        }
+      },
+      filter: (page) => {
+        // Filter out any test or debug pages
+        return !page.includes('test-') && !page.includes('debug-');
+      }
+    }),
+    mdx(),
+  ],
+
+  markdown: {
+    remarkPlugins: [
+      remarkModifiedTime,
+      [remarkToc, { heading: "contents" }],
+      [
+        remarkCollapse,
+        {
+          test: "Table of contents",
+        },
+      ],
+    ],
+    rehypePlugins: [
+      rehypeSlug,
+      [
+        rehypeAutolinkHeadings,
+        {
+          behavior: "wrap",
+        },
+      ],
+    ],
+    shikiConfig: {
+      theme: "one-dark-pro",
+      wrap: true,
+    },
   },
 });

@@ -1,0 +1,10 @@
+{
+  "site": {
+    "base_url": "http://localhost:4321",
+    "base_path": "/",
+    "trailing_slash": false,
+    "title": "zhouzhiou",
+    "description": "Exploring frontier technology, design, and personal projects."
+  }
+}
+
