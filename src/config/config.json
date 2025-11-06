@@ -1,7 +1,7 @@
 {
   "site": {
-    "base_url": "http://localhost:4321",
-    "base_path": "/",
+    "base_url": "https://zhouzhiouhub.github.io/Astro_Two",
+    "base_path": "/Astro_Two/",
     "trailing_slash": false,
     "title": "zhouzhiou",
     "description": "Exploring frontier technology, design, and personal projects."
