@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && node scripts/postbuild.mjs",
-    "build:github": "DEPLOY_TARGET=github-pages npm run build",
+    "build:github": "cross-env DEPLOY_TARGET=github-pages npm run build",
     "preview": "astro preview",
     "check": "astro check --minimumSeverity warning",
     "astro": "astro"
@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
+    "cross-env": "^10.1.0",
     "pagefind": "^1.1.0",
     "postcss": "^8.4.47",
     "typescript": "^5.6.2"
