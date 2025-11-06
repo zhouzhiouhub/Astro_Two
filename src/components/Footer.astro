@@ -11,12 +11,14 @@ import facebookSvg from '@/assets/facebook.svg?raw';
 import emailSvg from '@/assets/email.svg?raw';
 import { t } from '@/lib/i18n';
 import { localeHref, withBase } from '@/lib/url';
+import config from '@/config/config.json';
 
 const { lang = 'en' } = Astro.props as { lang?: string };
 const year = new Date().getFullYear();
 const icp = (import.meta as any).env?.SITE_ICP as string | undefined;
 const mailUser = (import.meta as any).env?.MAIL_USER as string | undefined;
 const emailHref = mailUser ? `mailto:${mailUser}` : 'mailto:your-email@example.com';
+const social = config.social || {};
 const localized = {
   home: localeHref(lang),
   blog: localeHref(lang, '/blog'),
@@ -63,15 +65,15 @@ function normalizeSvg(raw: string) {
 
 const links = [
   { label: 'Email', svg: normalizeSvg(emailSvg), href: emailHref, scale: 0.92 },
-  { label: 'QQ', svg: normalizeSvg(qqSvg), href: '#', scale: 0.9 },
-  { label: 'WeChat', svg: normalizeSvg(wechatSvg), href: '#', scale: 0.9 },
-  { label: 'Discord', svg: normalizeSvg(discordSvg), href: '#', scale: 0.9 },
-  { label: 'YouTube', svg: normalizeSvg(youtubeSvg), href: '#', scale: 0.96 },
-  { label: 'GitHub', svg: normalizeSvg(githubSvg), href: '#', scale: 0.96 },
-  { label: 'Weibo', svg: normalizeSvg(weiboSvg), href: '#', scale: 0.9 },
-  { label: 'LinkedIn', svg: normalizeSvg(linkedinSvg), href: '#', scale: 0.94 },
-  { label: 'X', svg: normalizeSvg(xSvg), href: '#', scale: 0.94 },
-  { label: 'Facebook', svg: normalizeSvg(facebookSvg), href: '#', scale: 0.94 },
+  { label: 'QQ', svg: normalizeSvg(qqSvg), href: social.qq || 'https://im.qq.com/', scale: 0.9 },
+  { label: 'WeChat', svg: normalizeSvg(wechatSvg), href: social.wechat || 'https://weixin.qq.com/', scale: 0.9 },
+  { label: 'Discord', svg: normalizeSvg(discordSvg), href: social.discord || 'https://discord.com/', scale: 0.9 },
+  { label: 'YouTube', svg: normalizeSvg(youtubeSvg), href: social.youtube || 'https://www.youtube.com/', scale: 0.96 },
+  { label: 'GitHub', svg: normalizeSvg(githubSvg), href: social.github || 'https://github.com/', scale: 0.96 },
+  { label: 'Weibo', svg: normalizeSvg(weiboSvg), href: social.weibo || 'https://weibo.com/', scale: 0.9 },
+  { label: 'LinkedIn', svg: normalizeSvg(linkedinSvg), href: social.linkedin || 'https://www.linkedin.com/', scale: 0.94 },
+  { label: 'X', svg: normalizeSvg(xSvg), href: social.x || 'https://x.com/', scale: 0.94 },
+  { label: 'Facebook', svg: normalizeSvg(facebookSvg), href: social.facebook || 'https://www.facebook.com/', scale: 0.94 },
 ];
 ---
 <footer class="container relative overflow-hidden pt-6 pb-12 border-t border-[var(--color-border)] mt-16">
