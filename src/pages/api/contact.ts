@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import { z, ZodError } from 'zod';
 import { sendMail } from '@/lib/mailer';
+import { isLocale } from '@/lib/i18n';
+import { localeHref } from '@/lib/url';
 
 const schema = z.object({
   name: z.string().min(1).max(100),
@@ -46,8 +48,8 @@ export const POST: APIRoute = async ({ request, url }) => {
 
     const lang = url.searchParams.get('lang');
     const wantsRedirect = Boolean(lang);
-    if (wantsRedirect) {
-      const target = `/${lang}/contact?sent=1`;
+    if (wantsRedirect && lang && isLocale(lang)) {
+      const target = `${localeHref(lang, '/contact')}?sent=1`;
       return new Response(null, { status: 303, headers: { Location: target } });
     }
     return new Response(JSON.stringify({ ok: true }), { headers: { 'content-type': 'application/json' } });
@@ -62,8 +64,8 @@ export const POST: APIRoute = async ({ request, url }) => {
     if (code === 'EAUTH' || lower.includes('auth') || lower.includes('invalid login')) e = 'auth';
     else if (code === 'ETIMEDOUT' || code === 'ECONNECTION' || code === 'ENOTFOUND' || lower.includes('timeout')) e = 'conn';
     const lang = url.searchParams.get('lang');
-    if (lang) {
-      const target = `/${lang}/contact?error=1&e=${encodeURIComponent(e)}`;
+    if (lang && isLocale(lang)) {
+      const target = `${localeHref(lang, '/contact')}?error=1&e=${encodeURIComponent(e)}`;
       return new Response(null, { status: 303, headers: { Location: target } });
     }
     return new Response(JSON.stringify({ ok: false, error: msg, code }), { status: 400, headers: { 'content-type': 'application/json' } });

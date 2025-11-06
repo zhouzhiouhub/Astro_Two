@@ -2,6 +2,7 @@
 import Badge from "./Badge.astro";
 import CTA from "./CTA.astro";
 import type { HomeHighlight } from "@/data/home";
+import { withBase } from "@/lib/url";
 
 const imageMap = {
   heroCode: "/og/hero-code.svg",
@@ -22,7 +23,7 @@ interface Props {
 const { badge, title, subtitle, mission, ctaPrimary, ctaSecondary, highlights } = Astro.props as Props;
 const resolvedHighlights = highlights.map((item) => ({
   ...item,
-  src: imageMap[item.image] ?? imageMap.heroCode,
+  src: withBase(imageMap[item.image] ?? imageMap.heroCode),
 }));
 ---
 <section class="relative overflow-hidden">

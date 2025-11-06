@@ -3,6 +3,7 @@ import Base from "@/layouts/BaseLayout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { isLocale, SUPPORTED_LOCALES, type Locale, t } from "@/lib/i18n";
+import { localeHref, withBase } from "@/lib/url";
 import { projectsByLocale, getProjectBySlug } from "@/data/projects";
 
 export async function getStaticPaths() {
@@ -21,6 +22,8 @@ if (!project) { throw new Error("Project not found"); }
 
 const title = `${project.title} · ${project.tagline}`;
 const url = Astro.url.href;
+const projectsHref = localeHref(lang, '/projects');
+const projectImage = withBase(project.image);
 const siteOrigin = Astro.site ?? (url ? new URL(url).origin : undefined);
 const toAbsolute = (value: string) => {
   try {
@@ -31,7 +34,7 @@ const toAbsolute = (value: string) => {
 };
 
 const canonical = toAbsolute(url);
-const image = toAbsolute(project.image);
+const image = toAbsolute(projectImage);
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -48,7 +51,7 @@ const structuredData = {
 <Base title={title} desc={project.summary} url={url} lang={lang} image={image} canonical={canonical} structuredData={structuredData}>
   <Header lang={lang} />
   <main class="container py-12">
-    <a href={`/${lang}/projects`} class="text-sm text-[var(--color-muted)] hover:text-[var(--color-fg)]">← {t('projects','title', lang)}</a>
+    <a href={projectsHref} class="text-sm text-[var(--color-muted)] hover:text-[var(--color-fg)]">← {t('projects','title', lang)}</a>
     <article class="mt-6 space-y-10">
       <header class="space-y-4">
         <h1 class="text-3xl font-semibold leading-tight">{project.title}</h1>
@@ -60,7 +63,7 @@ const structuredData = {
       </header>
 
       <div class="overflow-hidden rounded-3xl border border-[var(--color-border)]">
-        <img src={project.image} alt={project.imageAlt} loading="lazy" class="h-80 w-full object-cover" />
+        <img src={projectImage} alt={project.imageAlt} loading="lazy" class="h-80 w-full object-cover" />
       </div>
 
       <section class="grid gap-6 md:grid-cols-[2fr,1fr]">

@@ -4,6 +4,7 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import SearchButton from "@/components/SearchButton.astro";
 import { t, isLocale } from "@/lib/i18n";
+import { localeHref } from "@/lib/url";
 import { notesByLocale } from "@/data/notes";
 
 export async function getStaticPaths() {
@@ -30,6 +31,7 @@ const visibleNotes = allNotes.filter((note) => {
   const matchesTag = tag ? note.tags.includes(tag) : true;
   return matchesQuery && matchesTag;
 });
+const notesHref = localeHref(lang, '/notes');
 ---
 <Base title={title} desc={subtitle} url={url} lang={lang}>
   <Header lang={lang} />
@@ -66,7 +68,7 @@ const visibleNotes = allNotes.filter((note) => {
       <div class="md:col-span-2 flex justify-end gap-3">
         <button type="submit" class="btn btn-primary text-sm">{lang === 'zh' ? '筛选' : 'Filter'}</button>
         {(q || tag) && (
-          <a href={`/${lang}/notes`} class="btn btn-secondary text-sm">{lang === 'zh' ? '重置' : 'Reset'}</a>
+          <a href={notesHref} class="btn btn-secondary text-sm">{lang === 'zh' ? '重置' : 'Reset'}</a>
         )}
       </div>
     </form>

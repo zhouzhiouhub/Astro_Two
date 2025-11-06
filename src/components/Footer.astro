@@ -9,10 +9,30 @@ import linkedinSvg from '@/assets/cib-linkedin.svg?raw';
 import xSvg from '@/assets/twitter.svg?raw';
 import facebookSvg from '@/assets/facebook.svg?raw';
 import { t } from '@/lib/i18n';
+import { localeHref, withBase } from '@/lib/url';
 
 const { lang = 'en' } = Astro.props as { lang?: string };
 const year = new Date().getFullYear();
 const icp = (import.meta as any).env?.SITE_ICP as string | undefined;
+const localized = {
+  home: localeHref(lang),
+  blog: localeHref(lang, '/blog'),
+  about: localeHref(lang, '/about'),
+  contact: localeHref(lang, '/contact'),
+  categoriesTags: localeHref(lang, '/categories-tags'),
+  projects: localeHref(lang, '/projects'),
+  notes: localeHref(lang, '/notes'),
+  essays: localeHref(lang, '/essays'),
+  research: localeHref(lang, '/research'),
+  archive: localeHref(lang, '/archive'),
+  blogroll: localeHref(lang, '/blogroll'),
+  references: localeHref(lang, '/references'),
+  opensource: localeHref(lang, '/opensource'),
+  privacy: localeHref(lang, '/privacy'),
+  terms: localeHref(lang, '/terms'),
+};
+const logoSrc = withBase('/logo.svg');
+const rssHref = withBase('/rss.xml');
 
 function normalizeSvg(raw: string) {
   let s = raw
@@ -56,8 +76,8 @@ const links = [
 
   <!-- top brand + tagline -->
   <div class="flex items-center justify-between mb-6">
-    <a href={`/${lang}`} class="inline-flex items-center gap-3">
-      <img src="/logo.svg" alt="logo" class="h-10 w-10 md:h-12 md:w-12" />
+    <a href={localized.home} class="inline-flex items-center gap-3">
+      <img src={logoSrc} alt="logo" class="h-10 w-10 md:h-12 md:w-12" />
       <span class="sr-only">Home</span>
     </a>
     <p class="hidden md:block text-[var(--color-muted)]">{t('footer','tagline', lang)}</p>
@@ -68,9 +88,9 @@ const links = [
     <div>
       <div class="text-[var(--color-fg)] font-semibold text-lg">{t('footer','col_about', lang)}</div>
       <ul class="mt-4 space-y-2 text-[var(--color-muted)] leading-7">
-        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/about`}>{t('footer','about_me', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/blog`}>{t('footer','blog_philosophy', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/contact`}>{t('footer','contact', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={localized.about}>{t('footer','about_me', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={localized.blog}>{t('footer','blog_philosophy', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={localized.contact}>{t('footer','contact', lang)}</a></li>
         <li><a class="hover:text-[var(--color-fg)]" href="#subscribe">{t('footer','subscribe', lang)}</a></li>
       </ul>
     </div>
@@ -79,10 +99,10 @@ const links = [
     <div>
       <div class="text-[var(--color-fg)] font-semibold text-lg">{t('footer','col_content', lang)}</div>
       <ul class="mt-4 space-y-2 text-[var(--color-muted)] leading-7">
-        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}`}>{t('footer','home', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/blog`}>{t('footer','all_posts', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/categories-tags`}>{t('footer','categories_tags', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/projects`}>{t('footer','projects', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={localized.home}>{t('footer','home', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={localized.blog}>{t('footer','all_posts', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={localized.categoriesTags}>{t('footer','categories_tags', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={localized.projects}>{t('footer','projects', lang)}</a></li>
       </ul>
     </div>
 
@@ -90,10 +110,10 @@ const links = [
     <div>
       <div class="text-[var(--color-fg)] font-semibold text-lg">{t('footer','col_creative', lang)}</div>
       <ul class="mt-4 space-y-2 text-[var(--color-muted)] leading-7">
-        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/notes`}>{t('footer','notes_ideas', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/essays`}>{t('footer','essays_inspirations', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/research`}>{t('footer','research_experiments', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/archive`}>{t('footer','writing_archive', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={localized.notes}>{t('footer','notes_ideas', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={localized.essays}>{t('footer','essays_inspirations', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={localized.research}>{t('footer','research_experiments', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={localized.archive}>{t('footer','writing_archive', lang)}</a></li>
       </ul>
     </div>
 
@@ -101,10 +121,10 @@ const links = [
     <div>
       <div class="text-[var(--color-fg)] font-semibold text-lg">{t('footer','col_resources', lang)}</div>
       <ul class="mt-4 space-y-2 text-[var(--color-muted)] leading-7">
-        <li><a class="hover:text-[var(--color-fg)]" href="/rss.xml" target="_blank" rel="noopener noreferrer">{t('footer','rss', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/blogroll`}>{t('footer','blogroll', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/references`}>{t('footer','references', lang)}</a></li>
-        <li><a class="hover:text-[var(--color-fg)]" href={`/${lang}/opensource`}>{t('footer','opensource', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={rssHref} target="_blank" rel="noopener noreferrer">{t('footer','rss', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={localized.blogroll}>{t('footer','blogroll', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={localized.references}>{t('footer','references', lang)}</a></li>
+        <li><a class="hover:text-[var(--color-fg)]" href={localized.opensource}>{t('footer','opensource', lang)}</a></li>
       </ul>
     </div>
   </div>
@@ -134,9 +154,9 @@ const links = [
       )}
     </div>
     <div class="flex items-center gap-4 self-end md:self-auto">
-      <a href={`/${lang}/privacy`} class="hover:text-[var(--color-fg)]">{t('common','privacy', lang)}</a>
+      <a href={localized.privacy} class="hover:text-[var(--color-fg)]">{t('common','privacy', lang)}</a>
       <span class="opacity-40">&bull;</span>
-      <a href={`/${lang}/terms`} class="hover:text-[var(--color-fg)]">{t('common','terms', lang)}</a>
+      <a href={localized.terms} class="hover:text-[var(--color-fg)]">{t('common','terms', lang)}</a>
     </div>
   </div>
 </footer>

@@ -1,11 +1,13 @@
 ---
 import Base from "@/layouts/BaseLayout.astro";
 import { isLocale, defaultLocale, type Locale, pathWithLocale } from "@/lib/i18n";
+import { localeHref, withBase } from "@/lib/url";
 
 const pathname = Astro.url.pathname;
 const guess = pathname.split("/").filter(Boolean)[0];
 const lang: Locale = isLocale(guess ?? "") ? (guess as Locale) : defaultLocale;
-const home = `/${lang}`;
+const home = localeHref(lang);
+const blogHref = withBase(pathWithLocale(lang, '/blog'));
 const title = "Page not found";
 const desc = "The page you’re looking for doesn’t exist.";
 ---
@@ -21,7 +23,7 @@ const desc = "The page you’re looking for doesn’t exist.";
       </p>
       <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
         <a href={home} class="btn btn-primary text-sm">{lang === 'zh' ? '返回首页' : 'Go home'}</a>
-        <a href={pathWithLocale(lang, '/blog')} class="btn btn-secondary text-sm">{lang === 'zh' ? '浏览博客' : 'Browse blog'}</a>
+        <a href={blogHref} class="btn btn-secondary text-sm">{lang === 'zh' ? '浏览博客' : 'Browse blog'}</a>
       </div>
     </div>
   </main>

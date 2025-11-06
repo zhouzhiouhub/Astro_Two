@@ -1,42 +1,49 @@
 ---
 import { t, type Locale, pathWithLocale } from "@/lib/i18n";
+import { localeHref, withBase } from "@/lib/url";
 import LocaleSwitcher from "./LocaleSwitcher.astro";
 const { lang } = Astro.props as { lang: Locale };
 const currentPath = Astro.url.pathname;
 const base = `/${lang}`;
 const isHomeActive = currentPath === base || currentPath === `${base}/`;
-const isActive = (p) => currentPath === p || currentPath.startsWith(p + '/');
+const isActive = (p: string) => currentPath === p || currentPath.startsWith(p + '/');
 const blogPath = `${base}/blog`;
+const blogHref = localeHref(lang, '/blog');
 const projectsPath = `${base}/projects`;
+const projectsHref = localeHref(lang, '/projects');
 const notesPath = `${base}/notes`;
+const notesHref = localeHref(lang, '/notes');
 const aboutPath = `${base}/about`;
+const aboutHref = localeHref(lang, '/about');
 const contactPath = `${base}/contact`;
+const contactHref = localeHref(lang, '/contact');
+const homeHref = localeHref(lang);
 ---
 <div id="site-header" class="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg)] backdrop-blur transition-transform duration-300 ease-out will-change-transform">
 <header class="container relative flex items-center justify-between py-6">
-  <a href={`/${lang}`} class="flex items-center gap-2">
-    <img src="/logo.svg" alt="zhouzhiou" width="28" height="28"/>
+  <a href={homeHref} class="flex items-center gap-2">
+    <img src={withBase('/logo.svg')} alt="zhouzhiou" width="28" height="28"/>
     <span class="sr-only">{t('common','sr_home', lang)}</span>
   </a>
   <nav class="hidden md:flex items-center gap-10 lg:gap-12 text-[15px] lg:text-[17px] text-[var(--color-muted)] font-medium">
     <a aria-current={isHomeActive ? 'page' : undefined}
        class={`inline-flex h-10 items-center rounded-md px-3 leading-none border-b-2 border-transparent hover:text-[var(--color-fg)] hover:border-[var(--color-primary)] ${isHomeActive ? 'text-[var(--color-fg)] font-semibold border-[var(--color-primary)]' : ''}`}
-       href={`/${lang}`}>{t('common','nav_home', lang)}</a>
+       href={homeHref}>{t('common','nav_home', lang)}</a>
     <a aria-current={isActive(blogPath) ? 'page' : undefined}
        class={`inline-flex h-10 items-center rounded-md px-3 leading-none border-b-2 border-transparent hover:text-[var(--color-fg)] hover:border-[var(--color-primary)] ${isActive(blogPath) ? 'text-[var(--color-fg)] font-semibold border-[var(--color-primary)]' : ''}`}
-       href={blogPath}>{t('common','nav_blog', lang)}</a>
+       href={blogHref}>{t('common','nav_blog', lang)}</a>
     <a aria-current={isActive(projectsPath) ? 'page' : undefined}
        class={`inline-flex h-10 items-center rounded-md px-3 leading-none border-b-2 border-transparent hover:text-[var(--color-fg)] hover:border-[var(--color-primary)] ${isActive(projectsPath) ? 'text-[var(--color-fg)] font-semibold border-[var(--color-primary)]' : ''}`}
-       href={projectsPath}>{t('common','nav_projects', lang)}</a>
+       href={projectsHref}>{t('common','nav_projects', lang)}</a>
     <a aria-current={isActive(notesPath) ? 'page' : undefined}
        class={`inline-flex h-10 items-center rounded-md px-3 leading-none border-b-2 border-transparent hover:text-[var(--color-fg)] hover:border-[var(--color-primary)] ${isActive(notesPath) ? 'text-[var(--color-fg)] font-semibold border-[var(--color-primary)]' : ''}`}
-       href={notesPath}>{t('common','nav_notes', lang)}</a>
+       href={notesHref}>{t('common','nav_notes', lang)}</a>
     <a aria-current={isActive(aboutPath) ? 'page' : undefined}
        class={`inline-flex h-10 items-center rounded-md px-3 leading-none border-b-2 border-transparent hover:text-[var(--color-fg)] hover:border-[var(--color-primary)] ${isActive(aboutPath) ? 'text-[var(--color-fg)] font-semibold border-[var(--color-primary)]' : ''}`}
-       href={aboutPath}>{t('common','nav_about', lang)}</a>
+       href={aboutHref}>{t('common','nav_about', lang)}</a>
     <a aria-current={isActive(contactPath) ? 'page' : undefined}
        class={`inline-flex h-10 items-center rounded-md px-3 leading-none border-b-2 border-transparent hover:text-[var(--color-fg)] hover:border-[var(--color-primary)] ${isActive(contactPath) ? 'text-[var(--color-fg)] font-semibold border-[var(--color-primary)]' : ''}`}
-       href={contactPath}>{t('common','nav_contact', lang)}</a>
+       href={contactHref}>{t('common','nav_contact', lang)}</a>
 
     <!-- Right side icons -->
     <!-- search icon removed per request -->
@@ -62,17 +69,17 @@ const contactPath = `${base}/contact`;
 
   <!-- Mobile menu panel -->
   <div id="mobile-menu" role="menu" aria-labelledby="menu-toggle" class="md:hidden hidden absolute right-0 top-full mt-2 min-w-[220px] rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-soft)] p-2 text-sm shadow-sm dark:shadow-glow z-50">
-    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}`}>{t('common','nav_home', lang)}</a>
-    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}/blog`}>{t('common','nav_blog', lang)}</a>
-    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}/projects`}>{t('common','nav_projects', lang)}</a>
-    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}/notes`}>{t('common','nav_notes', lang)}</a>
-    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}/about`}>{t('common','nav_about', lang)}</a>
-    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={`/${lang}/contact`}>{t('common','nav_contact', lang)}</a>
+    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={homeHref}>{t('common','nav_home', lang)}</a>
+    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={blogHref}>{t('common','nav_blog', lang)}</a>
+    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={projectsHref}>{t('common','nav_projects', lang)}</a>
+    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={notesHref}>{t('common','nav_notes', lang)}</a>
+    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={aboutHref}>{t('common','nav_about', lang)}</a>
+    <a class="block rounded px-4 py-3 text-base font-medium hover:bg-black/5 dark:hover:bg-white/5" href={contactHref}>{t('common','nav_contact', lang)}</a>
     <div class="my-1 border-t border-[var(--color-border)]"></div>
     <div class="px-3 py-1 text-[var(--color-muted)]">Language</div>
     <div class="flex gap-1 px-2 pb-2">
-      <a class="flex-1 text-center rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5" href={pathWithLocale('en', currentPath)}>{t('common','lang_en','en')}</a>
-      <a class="flex-1 text-center rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5" href={pathWithLocale('zh', currentPath)}>{t('common','lang_zh','zh')}</a>
+      <a class="flex-1 text-center rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5" href={withBase(pathWithLocale('en', currentPath))}>{t('common','lang_en','en')}</a>
+      <a class="flex-1 text-center rounded px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5" href={withBase(pathWithLocale('zh', currentPath))}>{t('common','lang_zh','zh')}</a>
     </div>
   </div>
 

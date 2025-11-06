@@ -1,6 +1,7 @@
 ---
 import type { Locale } from "@/lib/i18n";
 import { pathWithLocale, t } from "@/lib/i18n";
+import { withBase } from "@/lib/url";
 const { lang = 'en', path = '/' } = Astro.props as { lang: Locale; path?: string };
 ---
 <div class="relative">
@@ -25,7 +26,7 @@ const { lang = 'en', path = '/' } = Astro.props as { lang: Locale; path?: string
   >
     <li>
       <a
-        href={pathWithLocale('en', path)}
+        href={withBase(pathWithLocale('en', path))}
         class={`block rounded px-4 py-2.5 font-medium hover:bg-black/5 dark:hover:bg-white/5 ${lang==='en' ? 'text-[var(--color-fg)]' : 'text-[var(--color-muted)]'}`}
         role="menuitem"
       >
@@ -34,7 +35,7 @@ const { lang = 'en', path = '/' } = Astro.props as { lang: Locale; path?: string
     </li>
     <li>
       <a
-        href={pathWithLocale('zh', path)}
+        href={withBase(pathWithLocale('zh', path))}
         class={`block rounded px-4 py-2.5 font-medium hover:bg-black/5 dark:hover:bg-white/5 ${lang==='zh' ? 'text-[var(--color-fg)]' : 'text-[var(--color-muted)]'}`}
         role="menuitem"
       >

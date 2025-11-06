@@ -3,6 +3,7 @@ import Base from "@/layouts/BaseLayout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { t, isLocale } from "@/lib/i18n";
+import { localeHref, withBase } from "@/lib/url";
 import { aboutContent, socials } from "@/data/about";
 
 export async function getStaticPaths() {
@@ -19,6 +20,7 @@ const title = t("about", "title", lang);
 const subtitle = t("about", "subtitle", lang);
 const url = Astro.url.href;
 const content = aboutContent[lang];
+const projectsHref = localeHref(lang, '/projects');
 ---
 <Base title={title} desc={subtitle} url={url} lang={lang}>
   <Header lang={lang} />
@@ -50,7 +52,7 @@ const content = aboutContent[lang];
       </div>
       <aside class="flex flex-col items-start gap-6">
         <div class="w-full overflow-hidden rounded-3xl border border-[var(--color-border)]">
-          <img src="/og/about-portrait.svg" alt={content.photoAlt} loading="lazy" class="h-80 w-full object-cover" />
+          <img src={withBase('/og/about-portrait.svg')} alt={content.photoAlt} loading="lazy" class="h-80 w-full object-cover" />
         </div>
         <div class="card w-full space-y-4 p-6 text-sm text-[var(--color-muted)]">
           <h3 class="text-base font-semibold text-[var(--color-fg)]">{content.contactHeading}</h3>
@@ -69,7 +71,7 @@ const content = aboutContent[lang];
       </aside>
     </section>
     <section class="mt-12">
-      <a href={`/${lang}/projects`} class="btn btn-primary text-sm">{t('common','cta_secondary', lang)}</a>
+      <a href={projectsHref} class="btn btn-primary text-sm">{t('common','cta_secondary', lang)}</a>
     </section>
     <Footer lang={lang} />
   </main>

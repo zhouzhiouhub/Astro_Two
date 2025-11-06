@@ -4,6 +4,7 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import SearchButton from "@/components/SearchButton.astro";
 import { t, isLocale } from "@/lib/i18n";
+import { localeHref, withBase } from "@/lib/url";
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 
@@ -27,9 +28,6 @@ const rawPosts: PostEntry[] = allPosts
   .filter((p): p is PostEntry => p.data.locale === lang)
   .sort((a: PostEntry, b: PostEntry) => new Date(b.data.date as string | Date).getTime() - new Date(a.data.date as string | Date).getTime());
 
-const BASE = import.meta.env.BASE_URL || '/';
-const withBase = (p: string) => (p.startsWith('/') ? BASE + p.slice(1) : p);
-
 const enriched: Array<PostEntry & { readingMinutes: number }> = rawPosts.map((post: PostEntry) => {
   const body = post.body ?? "";
   const words = body.split(/\s+/).filter(Boolean).length;
@@ -51,6 +49,12 @@ const emptyText = (() => {
   if (v && v !== 'empty') return v;
   return lang === 'zh' ? '暂无文章。' : 'No posts yet.';
 })();
+const blogHref = localeHref(lang, '/blog');
+const blogTagHref = (tag?: string | null) => {
+  if (!tag) return blogHref;
+  return `${blogHref}?tag=${encodeURIComponent(tag)}`;
+};
+const postHref = (slug: string) => localeHref(lang, `/blog/${slug}`);
 ---
 <Base title={title} desc={subtitle} url={url} lang={lang}>
   <Header lang={lang} />
@@ -62,14 +66,14 @@ const emptyText = (() => {
       <div class="mt-6 flex flex-wrap items-center gap-3 text-sm">
         <span class="text-[var(--color-muted)]">{t('blog','tag_label', lang)}:</span>
         <a
-          href={`/${lang}/blog`}
+          href={blogHref}
           class={`rounded-full border px-4 py-1 transition ${!selectedTag ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-[var(--color-border)] text-[var(--color-muted)] hover:text-[var(--color-fg)]'}`}
         >
           {t('blog','tag_all', lang)}
         </a>
         {allTags.map((tag: string) => (
           <a
-            href={`/${lang}/blog?tag=${encodeURIComponent(tag)}`}
+            href={blogTagHref(tag)}
             class={`rounded-full border px-4 py-1 transition ${selectedTag === tag ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-[var(--color-border)] text-[var(--color-muted)] hover:text-[var(--color-fg)]'}`}
           >
             #{tag}
@@ -93,13 +97,13 @@ const emptyText = (() => {
             id={articleId}
             data-search-item
             data-search-title={post.data.title}
-            data-search-link={`/${lang}/blog/${post.data.slugBase}`}
+            data-search-link={postHref(post.data.slugBase)}
             data-search-anchor={articleId}
             data-search-description={summary}
             data-search-keywords={keywords}
             class="group flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] transition hover:-translate-y-0.5 hover:border-[var(--color-primary)]"
           >
-            <a href={`/${lang}/blog/${post.data.slugBase}`} class="block overflow-hidden">
+            <a href={postHref(post.data.slugBase)} class="block overflow-hidden">
               <img src={cover} alt={alt} loading="lazy" class="h-48 w-full object-cover transition duration-300 group-hover:scale-105" />
             </a>
             <div class="flex h-full flex-col gap-4 p-5">
@@ -109,7 +113,7 @@ const emptyText = (() => {
               </div>
               <div class="space-y-2">
                 <h2 class="text-xl font-semibold leading-tight">
-                  <a href={`/${lang}/blog/${post.data.slugBase}`}>{post.data.title}</a>
+                  <a href={postHref(post.data.slugBase)}>{post.data.title}</a>
                 </h2>
                 <p class="text-sm text-[var(--color-muted)] leading-relaxed">{summary}</p>
               </div>
@@ -121,7 +125,7 @@ const emptyText = (() => {
                 </div>
               )}
               <div class="mt-auto">
-                <a href={`/${lang}/blog/${post.data.slugBase}`} class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)]">
+                <a href={postHref(post.data.slugBase)} class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)]">
                   {t('blog','read_more', lang)}
                   <span aria-hidden="true">→</span>
                 </a>

@@ -6,6 +6,7 @@ import Metrics from "@/components/Metrics.astro";
 import FAQAccordion from "@/components/FAQAccordion.astro";
 import Footer from "@/components/Footer.astro";
 import { t, isLocale } from "@/lib/i18n";
+import { localeHref, withBase } from "@/lib/url";
 import { homeContent } from "@/data/home";
 import { projectsByLocale } from "@/data/projects";
 import { notesByLocale } from "@/data/notes";
@@ -28,6 +29,11 @@ const subtitle = t("home", "subtitle", lang);
 const badge = t("home", "badge", lang);
 const url = Astro.url.href;
 const content = homeContent[lang];
+const blogHref = localeHref(lang, '/blog');
+const projectsHref = localeHref(lang, '/projects');
+const notesHref = localeHref(lang, '/notes');
+const postLink = (slug: string) => localeHref(lang, `/blog/${slug}`);
+const projectLink = (slug: string) => localeHref(lang, `/projects/${slug}`);
 
 const posts = (await getCollection('posts'))
   .filter((entry) => entry.data.locale === lang)
@@ -45,8 +51,8 @@ const notes = notesByLocale[lang].slice(0, 3);
       title={title}
       subtitle={subtitle}
       mission={content.mission}
-      ctaPrimary={{ label: t('common','cta_primary', lang), href: `/${lang}/blog` }}
-      ctaSecondary={{ label: t('common','cta_secondary', lang), href: `/${lang}/projects` }}
+      ctaPrimary={{ label: t('common','cta_primary', lang), href: blogHref }}
+      ctaSecondary={{ label: t('common','cta_secondary', lang), href: projectsHref }}
       highlights={content.highlights}
     />
 
@@ -58,25 +64,25 @@ const notes = notesByLocale[lang].slice(0, 3);
           <h2 class="text-2xl font-semibold">{t('home','posts_title', lang)}</h2>
           <p class="text-sm text-[var(--color-muted)]">{t('blog','subtitle', lang)}</p>
         </div>
-        <a href={`/${lang}/blog`} class="text-sm text-[var(--color-primary)] hover:underline">{t('home','posts_more', lang)}</a>
+        <a href={blogHref} class="text-sm text-[var(--color-primary)] hover:underline">{t('home','posts_more', lang)}</a>
       </div>
       <div class="mt-6 grid gap-6 md:grid-cols-3">
         {posts.map((post) => {
           const date = typeof post.data.date === 'string' ? post.data.date : new Date(post.data.date).toISOString().slice(0, 10);
-          const cover = post.data.cover?.src ?? '/og/default.svg';
+          const cover = withBase(post.data.cover?.src ?? '/og/default.svg');
           const alt = post.data.cover?.alt ?? post.data.title;
           return (
             <article class="card flex h-full flex-col overflow-hidden">
-              <a href={`/${lang}/blog/${post.data.slugBase}`} class="block">
+              <a href={postLink(post.data.slugBase)} class="block">
                 <img src={cover} alt={alt} loading="lazy" class="h-40 w-full object-cover" />
               </a>
               <div class="flex flex-1 flex-col gap-3 p-5">
                 <time datetime={date} class="text-xs text-[var(--color-muted)]">{date}</time>
                 <h3 class="text-lg font-semibold leading-tight">
-                  <a href={`/${lang}/blog/${post.data.slugBase}`}>{post.data.title}</a>
+                  <a href={postLink(post.data.slugBase)}>{post.data.title}</a>
                 </h3>
                 <p class="text-sm text-[var(--color-muted)] leading-relaxed">{post.data.summary ?? post.data.description}</p>
-                <a href={`/${lang}/blog/${post.data.slugBase}`} class="mt-auto inline-flex items-center gap-2 text-sm text-[var(--color-primary)]">
+                <a href={postLink(post.data.slugBase)} class="mt-auto inline-flex items-center gap-2 text-sm text-[var(--color-primary)]">
                   {t('blog','read_more', lang)}
                   <span aria-hidden="true">→</span>
                 </a>
@@ -93,21 +99,21 @@ const notes = notesByLocale[lang].slice(0, 3);
           <h2 class="text-2xl font-semibold">{t('home','projects_title', lang)}</h2>
           <p class="text-sm text-[var(--color-muted)]">{t('projects','subtitle', lang)}</p>
         </div>
-        <a href={`/${lang}/projects`} class="text-sm text-[var(--color-primary)] hover:underline">{t('home','projects_more', lang)}</a>
+        <a href={projectsHref} class="text-sm text-[var(--color-primary)] hover:underline">{t('home','projects_more', lang)}</a>
       </div>
       <div class="mt-6 grid gap-6 md:grid-cols-3">
         {projects.map((project) => (
           <article class="card flex h-full flex-col overflow-hidden">
-            <a href={`/${lang}/projects/${project.slug}`}>
-              <img src={project.image} alt={project.imageAlt} loading="lazy" class="h-40 w-full object-cover" />
+            <a href={projectLink(project.slug)}>
+              <img src={withBase(project.image)} alt={project.imageAlt} loading="lazy" class="h-40 w-full object-cover" />
             </a>
             <div class="flex flex-1 flex-col gap-3 p-5">
               <span class="text-xs text-[var(--color-muted)]">{project.year}</span>
               <h3 class="text-lg font-semibold leading-tight">
-                <a href={`/${lang}/projects/${project.slug}`}>{project.title}</a>
+                <a href={projectLink(project.slug)}>{project.title}</a>
               </h3>
               <p class="text-sm text-[var(--color-muted)] leading-relaxed">{project.summary}</p>
-              <a href={`/${lang}/projects/${project.slug}`} class="mt-auto inline-flex items-center gap-2 text-sm text-[var(--color-primary)]">
+              <a href={projectLink(project.slug)} class="mt-auto inline-flex items-center gap-2 text-sm text-[var(--color-primary)]">
                 {t('projects','view_case_study', lang)}
                 <span aria-hidden="true">→</span>
               </a>
@@ -123,7 +129,7 @@ const notes = notesByLocale[lang].slice(0, 3);
           <h2 class="text-2xl font-semibold">{t('home','notes_title', lang)}</h2>
           <p class="text-sm text-[var(--color-muted)]">{t('notes','subtitle', lang)}</p>
         </div>
-        <a href={`/${lang}/notes`} class="text-sm text-[var(--color-primary)] hover:underline">{t('home','notes_more', lang)}</a>
+        <a href={notesHref} class="text-sm text-[var(--color-primary)] hover:underline">{t('home','notes_more', lang)}</a>
       </div>
       <div class="mt-6 grid gap-6 md:grid-cols-3">
         {notes.map((note) => (
