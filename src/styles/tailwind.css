@@ -37,6 +37,17 @@
   }
 
   a { color: inherit; text-decoration: none; }
+
+  select {
+    background-color: var(--color-bg-soft);
+    color: var(--color-fg);
+  }
+
+  select option,
+  select optgroup {
+    background-color: var(--color-bg-soft);
+    color: var(--color-fg);
+  }
 }
 
 @layer components {

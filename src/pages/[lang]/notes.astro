@@ -57,7 +57,7 @@ const notesHref = localeHref(lang, '/notes');
         <select
           name="tag"
           value={tag ?? ''}
-          class="rounded-xl border border-[var(--color-border)] bg-transparent px-4 py-3 text-sm outline-none focus:border-[var(--color-primary)]"
+          class="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] px-4 py-3 text-sm outline-none transition focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
         >
           <option value="">{t('blog','tag_all', lang)}</option>
           {tags.map((option) => (
