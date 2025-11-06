@@ -130,6 +130,8 @@ export const zh: Namespaced = {
     tag_label: "按标签筛选",
     updated_label: "更新于",
     empty: "没有符合条件的笔记。",
+    back_to_notes: "返回笔记",
+    view_detail: "阅读更多",
   },
   videos: { title: "视频", subtitle: "产品演示与讲解。" },
   faq: { title: "常见问题", subtitle: "对常见问题的解答。" },

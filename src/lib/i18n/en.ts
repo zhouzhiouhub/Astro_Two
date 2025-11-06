@@ -134,6 +134,8 @@ export const en: Namespaced = {
     tag_label: "Filter by tag",
     updated_label: "Updated",
     empty: "No notes matched your search.",
+    back_to_notes: "Back to Notes",
+    view_detail: "Read more",
   },
   videos: { title: "Videos", subtitle: "Product walkthroughs and demos." },
   faq: { title: "FAQ", subtitle: "Answers to common questions." },

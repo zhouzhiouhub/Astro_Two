@@ -34,6 +34,7 @@ const projectsHref = localeHref(lang, '/projects');
 const notesHref = localeHref(lang, '/notes');
 const postLink = (slug: string) => localeHref(lang, `/blog/${slug}`);
 const projectLink = (slug: string) => localeHref(lang, `/projects/${slug}`);
+const noteLink = (slug: string) => localeHref(lang, `/notes/${slug}`);
 
 const posts = (await getCollection('posts'))
   .filter((entry) => entry.data.locale === lang)
@@ -134,7 +135,7 @@ const notes = notesByLocale[lang].slice(0, 3);
       </div>
       <div class="mt-6 grid gap-6 md:grid-cols-3">
         {notes.map((note) => (
-          <article class="card flex h-full flex-col gap-3 p-5">
+          <article class="card flex h-full flex-col gap-3 p-5 hover:border-[var(--color-primary)] transition-colors cursor-pointer" onclick={`window.location.href='${noteLink(note.slug)}'`}>
             <div class="flex items-center justify-between text-xs text-[var(--color-muted)]">
               <span>{t('notes','updated_label', lang)} {note.updatedAt}</span>
               <div class="flex flex-wrap gap-2">
@@ -143,14 +144,22 @@ const notes = notesByLocale[lang].slice(0, 3);
                 ))}
               </div>
             </div>
-            <h3 class="text-lg font-semibold leading-tight">{note.title}</h3>
+            <h3 class="text-lg font-semibold leading-tight">
+              <a href={noteLink(note.slug)} onclick="event.stopPropagation()">{note.title}</a>
+            </h3>
             <p class="text-sm text-[var(--color-muted)] leading-relaxed">{note.summary}</p>
-            {note.link && (
-              <a href={note.link} class="mt-auto inline-flex items-center gap-2 text-sm text-[var(--color-primary)]" target="_blank" rel="noopener">
-                GitHub
+            <div class="mt-auto flex items-center justify-between">
+              <a href={noteLink(note.slug)} class="inline-flex items-center gap-2 text-sm text-[var(--color-primary)]" onclick="event.stopPropagation()">
+                {t('notes','view_detail', lang)}
                 <span aria-hidden="true">→</span>
               </a>
-            )}
+              {note.link && (
+                <a href={note.link} class="inline-flex items-center gap-2 text-sm text-[var(--color-muted)] hover:text-[var(--color-primary)]" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+                  GitHub
+                  <span aria-hidden="true">↗</span>
+                </a>
+              )}
+            </div>
           </article>
         ))}
       </div>

@@ -4,6 +4,7 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import SearchButton from "@/components/SearchButton.astro";
 import { t, isLocale } from "@/lib/i18n";
+import { localeHref } from "@/lib/url";
 import { notesByLocale } from "@/data/notes";
 
 export async function getStaticPaths() {
@@ -20,6 +21,7 @@ const title = t("notes", "title", lang);
 const subtitle = t("notes", "subtitle", lang);
 const url = Astro.url.href;
 const allNotes = notesByLocale[lang];
+const noteHref = (slug: string) => localeHref(lang, `/notes/${slug}`);
 ---
 <Base title={title} desc={subtitle} url={url} lang={lang}>
   <Header lang={lang} />
@@ -44,7 +46,8 @@ const allNotes = notesByLocale[lang];
           data-search-keywords={keywords}
           data-tags={note.tags.join(',')}
           data-search-link={note.link ?? ''}
-          class="card flex h-full flex-col gap-4 p-6"
+          class="card flex h-full flex-col gap-4 p-6 hover:border-[var(--color-primary)] transition-colors cursor-pointer"
+          onclick={`window.location.href='${noteHref(note.slug)}'`}
         >
           <div class="flex items-center justify-between text-xs text-[var(--color-muted)]">
             <span>{t('notes','updated_label', lang)} {note.updatedAt}</span>
@@ -58,12 +61,18 @@ const allNotes = notesByLocale[lang];
             <h2 class="text-lg font-semibold">{note.title}</h2>
             <p class="text-sm text-[var(--color-muted)] leading-relaxed">{note.summary}</p>
           </div>
-          {note.link && (
-            <a href={note.link} class="inline-flex items-center gap-2 text-sm text-[var(--color-primary)]" target="_blank" rel="noopener">
-              GitHub
+          <div class="mt-auto flex items-center justify-between">
+            <a href={noteHref(note.slug)} class="inline-flex items-center gap-2 text-sm text-[var(--color-primary)]" onclick="event.stopPropagation()">
+              {t('notes','view_detail', lang)}
               <span aria-hidden="true">→</span>
             </a>
-          )}
+            {note.link && (
+              <a href={note.link} class="inline-flex items-center gap-2 text-sm text-[var(--color-muted)] hover:text-[var(--color-primary)]" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+                GitHub
+                <span aria-hidden="true">↗</span>
+              </a>
+            )}
+          </div>
         </article>
       );})}
     </section>

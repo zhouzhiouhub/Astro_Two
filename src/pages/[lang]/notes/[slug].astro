@@ -1,0 +1,162 @@
+---
+import Base from "@/layouts/BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { isLocale, SUPPORTED_LOCALES, type Locale, t } from "@/lib/i18n";
+import { localeHref } from "@/lib/url";
+import { notesByLocale, getNoteBySlug } from "@/data/notes";
+import { marked } from "marked";
+
+export async function getStaticPaths() {
+  return SUPPORTED_LOCALES.flatMap((locale) =>
+    notesByLocale[locale].map((note) => ({
+      params: { lang: locale, slug: note.slug },
+    }))
+  );
+}
+export const prerender = true;
+
+const { lang, slug } = Astro.params as { lang: Locale; slug: string };
+if (!lang || !isLocale(lang)) { throw new Error("Invalid locale"); }
+const note = getNoteBySlug(lang, slug);
+if (!note) { throw new Error("Note not found"); }
+
+const title = note.title;
+const url = Astro.url.href;
+const notesHref = localeHref(lang, '/notes');
+const contentHtml = marked.parse(note.content);
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  name: note.title,
+  description: note.summary,
+  headline: note.title,
+  dateModified: note.updatedAt,
+  inLanguage: lang,
+  url,
+  keywords: note.tags.join(", "),
+};
+---
+<Base title={title} desc={note.summary} url={url} lang={lang} structuredData={structuredData}>
+  <Header lang={lang} />
+  <main class="container py-12">
+    <a href={notesHref} class="text-sm text-[var(--color-muted)] hover:text-[var(--color-fg)]">← {t('notes','back_to_notes', lang)}</a>
+    <article class="mt-6 space-y-6">
+      <header class="space-y-4">
+        <h1 class="text-3xl font-semibold leading-tight">{note.title}</h1>
+        <p class="text-lg text-[var(--color-muted)]">{note.summary}</p>
+        <div class="flex flex-wrap items-center gap-4 text-xs text-[var(--color-muted)]">
+          <span>{t('notes','updated_label', lang)}: {note.updatedAt}</span>
+          <div class="flex flex-wrap gap-2">
+            {note.tags.map((tag) => (
+              <span class="rounded-full border border-[var(--color-border)] px-3 py-1">#{tag}</span>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      <div class="prose prose-lg dark:prose-invert max-w-none">
+        <Fragment set:html={contentHtml} />
+      </div>
+
+      {note.link && (
+        <aside class="card p-5 space-y-3">
+          <h2 class="text-base font-semibold">{t('projects','view_repo', lang)}</h2>
+          <a href={note.link} class="inline-flex items-center gap-2 text-sm text-[var(--color-primary)]" target="_blank" rel="noopener">
+            {note.link}
+            <span aria-hidden="true">→</span>
+          </a>
+        </aside>
+      )}
+    </article>
+
+    <Footer lang={lang} />
+  </main>
+</Base>
+
+<style>
+  .prose {
+    color: var(--color-fg);
+  }
+  .prose :global(h1),
+  .prose :global(h2),
+  .prose :global(h3),
+  .prose :global(h4) {
+    color: var(--color-fg);
+    font-weight: 600;
+    margin-top: 2em;
+    margin-bottom: 0.75em;
+  }
+  .prose :global(h1) {
+    font-size: 2em;
+  }
+  .prose :global(h2) {
+    font-size: 1.5em;
+  }
+  .prose :global(h3) {
+    font-size: 1.25em;
+  }
+  .prose :global(p) {
+    margin-bottom: 1em;
+    line-height: 1.75;
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin-left: 1.5em;
+    margin-bottom: 1em;
+  }
+  .prose :global(li) {
+    margin-bottom: 0.5em;
+  }
+  .prose :global(code) {
+    background: var(--color-bg-subtle);
+    padding: 0.2em 0.4em;
+    border-radius: 0.25em;
+    font-size: 0.9em;
+    color: var(--color-primary);
+  }
+  .prose :global(pre) {
+    background: var(--color-bg-subtle);
+    padding: 1em;
+    border-radius: 0.5em;
+    overflow-x: auto;
+    margin-bottom: 1em;
+  }
+  .prose :global(pre code) {
+    background: none;
+    padding: 0;
+    color: var(--color-fg);
+  }
+  .prose :global(a) {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+  .prose :global(strong) {
+    font-weight: 600;
+    color: var(--color-fg);
+  }
+  .prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1em;
+  }
+  .prose :global(th),
+  .prose :global(td) {
+    border: 1px solid var(--color-border);
+    padding: 0.5em;
+    text-align: left;
+  }
+  .prose :global(th) {
+    background: var(--color-bg-subtle);
+    font-weight: 600;
+  }
+  .prose :global(blockquote) {
+    border-left: 4px solid var(--color-border);
+    padding-left: 1em;
+    margin-left: 0;
+    font-style: italic;
+    color: var(--color-muted);
+  }
+</style>
+
