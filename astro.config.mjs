@@ -18,6 +18,9 @@ const githubUser = config.site.github_user;
 const githubRepo = config.site.github_repo;
 const hasGitHubConfig = githubUser && githubRepo;
 
+// 检测是否为 GitHub Pages 部署
+const isGitHubPages = process.env.GITHUB_ACTIONS === 'true' || process.env.DEPLOY_TARGET === 'github-pages';
+
 // 动态配置 site 和 base
 let site, base;
 
@@ -28,24 +31,19 @@ if (isDev) {
 } else {
   // 生产环境：优先级从高到低
   
-  // 1. 显式指定的环境变量（最高优先级 - 覆盖所有默认行为）
+  // 1. 显式指定的环境变量（最高优先级）
   if (process.env.SITE_URL) {
     site = process.env.SITE_URL;
     base = process.env.BASE_PATH || '/';
   }
-  // 2. GitHub Actions 自动检测（CI/CD 环境）
-  else if (process.env.GITHUB_ACTIONS === 'true' && hasGitHubConfig) {
+  // 2. GitHub Pages 部署（CI 环境或显式指定）
+  else if (isGitHubPages && hasGitHubConfig) {
     site = `https://${githubUser}.github.io/${githubRepo}`;
     base = `/${githubRepo}/`;
   }
-  // 3. 有 GitHub 配置就默认用 GitHub Pages（本地构建也会用这个）
-  else if (hasGitHubConfig) {
-    site = `https://${githubUser}.github.io/${githubRepo}`;
-    base = `/${githubRepo}/`;
-  }
-  // 4. 兜底：没有任何配置时的默认值
+  // 3. 默认：根路径部署（适用于 Vercel、Netlify、自定义域名等）
   else {
-    site = 'https://yourdomain.com';
+    site = process.env.SITE_URL || 'https://yourdomain.com';
     base = '/';
   }
 }

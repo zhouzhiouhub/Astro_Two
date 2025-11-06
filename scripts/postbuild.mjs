@@ -18,6 +18,9 @@ const githubUser = config.site.github_user;
 const githubRepo = config.site.github_repo;
 const hasGitHubConfig = githubUser && githubRepo;
 
+// 检测是否为 GitHub Pages 部署
+const isGitHubPages = process.env.GITHUB_ACTIONS === 'true' || process.env.DEPLOY_TARGET === 'github-pages';
+
 // 智能检测部署环境（与 astro.config.mjs 保持一致）
 let basePath = '/';
 
@@ -25,14 +28,11 @@ let basePath = '/';
 if (process.env.BASE_PATH) {
   // 1. 显式指定的环境变量（最高优先级）
   basePath = process.env.BASE_PATH;
-} else if (process.env.GITHUB_ACTIONS === 'true' && hasGitHubConfig) {
-  // 2. GitHub Actions 自动检测
-  basePath = `/${githubRepo}/`;
-} else if (hasGitHubConfig) {
-  // 3. 有 GitHub 配置就默认用 GitHub Pages（本地构建也用这个）
+} else if (isGitHubPages && hasGitHubConfig) {
+  // 2. GitHub Pages 部署（CI 环境或显式指定）
   basePath = `/${githubRepo}/`;
 }
-// 4. 否则使用默认根路径 '/'
+// 3. 默认使用根路径 '/' （适用于本地构建、Vercel、Netlify、自定义域名等）
 
 // 确保 basePath 以 / 结尾
 if (basePath !== '/' && !basePath.endsWith('/')) {

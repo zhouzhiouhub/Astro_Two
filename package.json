@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && node scripts/postbuild.mjs",
+    "build:github": "cross-env DEPLOY_TARGET=github-pages npm run build",
     "preview": "astro preview",
     "check": "astro check --minimumSeverity warning",
     "astro": "astro"
