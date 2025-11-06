@@ -3,6 +3,9 @@ import { defaultLocale, isLocale, negotiateLocale, pathWithLocale } from "@/lib/
 import { initAuthExpiryNotifier } from "@/lib/authExpiryNotifier";
 
 export const onRequest: MiddlewareHandler = async (context, next) => {
+  // Note: This middleware only runs in SSR/hybrid mode.
+  // For static output, language detection is handled client-side.
+  
   // Ensure the notifier is set up once when the server handles the first request
   initAuthExpiryNotifier();
   const { url } = context;
@@ -56,6 +59,11 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
     return next();
   }
 
+  // For static output, skip server-side redirects
+  // Language detection is handled client-side via index.astro
+  return next();
+  
+  /* Server-side language redirect logic (disabled for static output)
   if (pathname === "/") {
     // Negotiate locale from Accept-Language, fallback to default
     const best = negotiateLocale(context.request.headers.get("accept-language"));
@@ -68,4 +76,5 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
   }
 
   return next();
+  */
 };

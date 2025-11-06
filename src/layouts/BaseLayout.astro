@@ -89,15 +89,22 @@ const meta = buildSeo({
 const ogImage = toAbsolute(meta.og.image) ?? meta.og.image;
 const twitterImage = toAbsolute(meta.twitter.image) ?? meta.twitter.image;
 const xDefaultAlternate = finalAlternates.find((alt) => alt.lang === defaultLocale) ?? finalAlternates[0];
+
+const baseEnv = import.meta.env.BASE_URL || '/';
+const normalizedBasePath = baseEnv === '/' ? '' : baseEnv.replace(/\/$/, '');
+const withBasePath = (value: string) => {
+  const trimmed = value.replace(/^\//, '');
+  return normalizedBasePath ? `${normalizedBasePath}/${trimmed}` : `/${trimmed}`;
+};
 ---
 <!doctype html>
-<html lang={lang} data-pagefind-filter={`language:${lang}`}>
+<html lang={lang} data-pagefind-filter={`language:${lang}`} data-base-path={normalizedBasePath || undefined}>
   <head>
     <!-- Language Detection Core Module (must be loaded first) -->
-    <script is:inline src="/lang-detect-core.js"></script>
+    <script is:inline src={withBasePath('lang-detect-core.js')}></script>
     
     <!-- Auto Language Redirect (runs immediately after core) -->
-    <script is:inline src="/lang-auto-redirect.js"></script>
+    <script is:inline src={withBasePath('lang-auto-redirect.js')}></script>
     
     <!-- Theme Detection (original script) -->
     <script is:inline>
@@ -134,7 +141,7 @@ const xDefaultAlternate = finalAlternates.find((alt) => alt.lang === defaultLoca
     <meta name="twitter:title" content={meta.twitter.title} />
     <meta name="twitter:description" content={meta.twitter.description} />
     <meta name="twitter:image" content={twitterImage} />
-    <link rel="icon" href="/favicon.svg" />
+    <link rel="icon" href={withBasePath('favicon.svg')} />
     {structuredData && (
       <script type="application/ld+json" is:inline>{JSON.stringify(structuredData)}</script>
     )}
