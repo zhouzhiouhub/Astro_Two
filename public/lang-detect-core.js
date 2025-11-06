@@ -18,6 +18,20 @@
     SUPPORTED_LANGS: ['en', 'zh'],
     DEFAULT_LANG: 'en',
     STORAGE_KEY: 'lang',
+    // Auto-detect base URL from current page
+    get BASE_URL() {
+      // Try to read from meta tag or detect from document base
+      const baseTag = document.querySelector('base');
+      if (baseTag) {
+        const base = baseTag.getAttribute('href');
+        return base.replace(window.location.origin, '').replace(/\/$/, '');
+      }
+      
+      // Fallback: try to detect from current path
+      const path = window.location.pathname;
+      const match = path.match(/^(\/[^\/]+)?\/(?:en|zh)\//);
+      return match && match[1] ? match[1] : '';
+    },
   };
 
   /**
@@ -85,7 +99,12 @@
      */
     getLangFromPath(pathname) {
       const path = pathname || window.location.pathname;
-      const pathSegments = path.replace(/^\//, '').split('/');
+      const baseUrl = CONFIG.BASE_URL;
+      
+      // Remove base URL from path if present
+      const pathWithoutBase = baseUrl ? path.replace(new RegExp(`^${baseUrl}`), '') : path;
+      const pathSegments = pathWithoutBase.replace(/^\//, '').split('/');
+      
       return CONFIG.SUPPORTED_LANGS.includes(pathSegments[0]) ? pathSegments[0] : null;
     },
 
@@ -126,15 +145,23 @@
      */
     buildPathWithLang(targetLang, currentPath) {
       const path = currentPath || window.location.pathname;
+      const baseUrl = CONFIG.BASE_URL;
       const currentLang = LangDetector.getLangFromPath(path);
 
+      // Remove base URL temporarily for manipulation
+      const pathWithoutBase = baseUrl ? path.replace(new RegExp(`^${baseUrl}`), '') : path;
+
+      let newPath;
       if (currentLang) {
         // Replace existing language prefix
-        return path.replace(/^\/(en|zh)(\/|$)/, `/${targetLang}$2`);
+        newPath = pathWithoutBase.replace(/^\/(en|zh)(\/|$)/, `/${targetLang}$2`);
       } else {
         // Add language prefix
-        return `/${targetLang}${path}`.replace(/\/+/g, '/');
+        newPath = `/${targetLang}${pathWithoutBase}`.replace(/\/+/g, '/');
       }
+
+      // Add base URL back
+      return baseUrl ? `${baseUrl}${newPath}` : newPath;
     },
 
     /**
