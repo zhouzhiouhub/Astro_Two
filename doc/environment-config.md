@@ -27,25 +27,22 @@
 
 ```javascript
 // 智能检测部署环境
-const isDev = import.meta.env.DEV;
-const isGitHubPages = process.env.GITHUB_ACTIONS === 'true' || 
-                      process.env.DEPLOY_TARGET === 'github-pages';
-
-// 动态配置 site 和 base
-let site, base;
-
 if (isDev) {
-  // 本地开发环境 - 使用 localhost
+  // 开发环境 - 使用 localhost
   site = 'http://localhost:4321';
   base = '/';
-} else if (isGitHubPages) {
+} else if (process.env.SITE_URL) {
+  // 显式指定环境变量（最高优先级）
+  site = process.env.SITE_URL;
+  base = process.env.BASE_PATH || '/';
+} else if (isGitHubPages && hasGitHubConfig) {
   // GitHub Pages - 自动从 config.json 读取仓库信息
   site = `https://${user}.github.io/${repo}`;
   base = `/${repo}/`;
 } else {
-  // 其他生产环境 (Vercel, Netlify, etc.)
-  site = process.env.SITE_URL || 'https://yourdomain.com';
-  base = process.env.BASE_PATH || '/';
+  // 默认 - 根路径（Vercel、Netlify 等）
+  site = 'https://yourdomain.com';
+  base = '/';
 }
 ```
 
@@ -75,46 +72,80 @@ npm run dev
 
 自动使用 `http://localhost:4321` 和 `/` 作为基础路径
 
-### 2. GitHub Pages 部署
+### 2. 本地构建（预览/测试）
 
-GitHub Actions 会自动检测 `GITHUB_ACTIONS=true` 环境变量，并从 `config.json` 读取仓库信息，自动配置为：
-- Site: `https://zhouzhiouhub.github.io/Astro_Two`
-- Base: `/Astro_Two/`
-
-### 3. 其他平台部署
-
-#### Vercel
-在 Vercel 仪表板设置环境变量：
-- `SITE_URL`: 你的域名
-- `BASE_PATH`: `/` (默认)
-
-#### Netlify
-在 Netlify 设置环境变量：
-- `SITE_URL`: 你的域名
-- `BASE_PATH`: `/` (默认)
-
-#### 自定义域名
-如果你有自己的域名，只需设置：
 ```bash
-SITE_URL=https://yourdomain.com npm run build
+npm run build
 ```
 
-## 本地测试 GitHub Pages 构建
+**生成配置：**
+- Site: `https://yourdomain.com`（占位）
+- Base: `/`（根路径）
 
-如果你想在本地测试 GitHub Pages 的构建结果：
+**用途：** 本地预览、准备部署到 Vercel/Netlify/自定义域名
 
+### 3. GitHub Pages 部署
+
+#### 本地测试
 ```bash
 npm run build:github
 npm run preview
 ```
 
-然后访问 `http://localhost:4321/Astro_Two/`
+访问 `http://localhost:4321/Astro_Two/`
+
+#### CI/CD 自动部署
+GitHub Actions 会自动检测 `GITHUB_ACTIONS=true` 环境变量，并从 `config.json` 读取仓库信息，自动配置为：
+- Site: `https://zhouzhiouhub.github.io/Astro_Two`
+- Base: `/Astro_Two/`
+
+### 4. 其他平台部署
+
+#### Vercel
+在 Vercel 仪表板设置环境变量（可选）：
+- `SITE_URL`: 你的域名（可选，Vercel 会自动设置）
+
+构建命令：`npm run build`
+
+#### Netlify
+在 Netlify 设置环境变量（可选）：
+- `SITE_URL`: 你的域名（可选，Netlify 会自动设置）
+
+构建命令：`npm run build`
+
+#### 自定义域名
+```bash
+SITE_URL=https://yourdomain.com npm run build
+```
+
+#### 子目录部署
+如果你想部署到 `https://yourdomain.com/blog/`：
+
+```bash
+SITE_URL=https://yourdomain.com BASE_PATH=/blog/ npm run build
+```
 
 ## 环境变量优先级
 
-1. **环境变量** (最高优先级) - `SITE_URL`, `BASE_PATH`
-2. **自动检测** - 检测 `GITHUB_ACTIONS` 或 `DEPLOY_TARGET`
-3. **默认值** (最低优先级) - 开发环境默认值
+系统使用以下优先级决定配置：
+
+```
+1. 开发环境（npm run dev）
+   → 始终使用 localhost:4321 和根路径
+
+2. 显式环境变量（最高优先级）
+   → SITE_URL, BASE_PATH
+   → 完全自定义，覆盖所有默认行为
+
+3. GitHub Pages 检测
+   → GITHUB_ACTIONS=true 或 DEPLOY_TARGET=github-pages
+   → 自动从 config.json 读取仓库信息
+   → 生成 GitHub Pages 路径
+
+4. 默认配置（最低优先级）
+   → 根路径 /
+   → 适用于 Vercel、Netlify、自定义域名
+```
 
 ## 优势总结
 
@@ -131,12 +162,14 @@ npm run preview
 
 1. **购买域名并配置 DNS**
 2. **在部署平台添加域名**
-3. **设置环境变量**：
+3. **设置环境变量**（可选）：
    ```
    SITE_URL=https://yourdomain.com
    BASE_PATH=/
    ```
 4. **重新部署** - 无需修改代码！
+
+如果使用 GitHub Pages 自定义域名，GitHub 会自动配置根路径，无需任何修改。
 
 ## 常见问题
 
@@ -151,4 +184,11 @@ SITE_URL=https://example.com BASE_PATH=/blog/ npm run build
 
 ### Q: GitHub Actions 自动检测失败怎么办？
 A: 检查 `config.json` 中的 `github_user` 和 `github_repo` 是否正确。
+
+### Q: 为什么需要 `build:github` 命令？
+A: 
+- `npm run build`: 本地构建，生成根路径（方便预览和测试）
+- `npm run build:github`: 模拟 GitHub Pages 构建（包含子路径）
+- GitHub Actions 会自动检测环境，不需要特殊命令
+
 
