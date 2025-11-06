@@ -29,6 +29,7 @@ if (isDev) {
   base = `/${repo}/`;
 } else {
   // 其他生产环境 (Vercel, Netlify, etc.)
+ 
   site = process.env.SITE_URL || 'https://yourdomain.com';
   base = process.env.BASE_PATH || '/';
 }
