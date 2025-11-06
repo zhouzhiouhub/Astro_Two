@@ -4,7 +4,6 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import SearchButton from "@/components/SearchButton.astro";
 import { t, isLocale } from "@/lib/i18n";
-import { localeHref } from "@/lib/url";
 import { notesByLocale } from "@/data/notes";
 
 export async function getStaticPaths() {
@@ -21,17 +20,6 @@ const title = t("notes", "title", lang);
 const subtitle = t("notes", "subtitle", lang);
 const url = Astro.url.href;
 const allNotes = notesByLocale[lang];
-const q = Astro.url.searchParams.get('q')?.toLowerCase() ?? '';
-const tag = Astro.url.searchParams.get('tag');
-const tags = Array.from(new Set(allNotes.flatMap((note) => note.tags))).sort();
-const visibleNotes = allNotes.filter((note) => {
-  const matchesQuery = q
-    ? [note.title, note.summary, note.tags.join(' ')].some((text) => text.toLowerCase().includes(q))
-    : true;
-  const matchesTag = tag ? note.tags.includes(tag) : true;
-  return matchesQuery && matchesTag;
-});
-const notesHref = localeHref(lang, '/notes');
 ---
 <Base title={title} desc={subtitle} url={url} lang={lang}>
   <Header lang={lang} />
@@ -41,43 +29,8 @@ const notesHref = localeHref(lang, '/notes');
     <p class="mt-2 text-[var(--color-muted)]">{subtitle}</p>
     <p class="mt-4 text-sm text-[var(--color-muted)]">{t('notes','intro', lang)}</p>
 
-    <form class="mt-6 grid gap-4 md:grid-cols-[2fr,1fr]" method="get">
-      <label class="flex flex-col gap-2 text-sm">
-        <span class="text-[var(--color-muted)]">{t('common','search', lang)}</span>
-        <input
-          type="search"
-          name="q"
-          value={q}
-          placeholder={t('notes','search_placeholder', lang)}
-          class="rounded-xl border border-[var(--color-border)] bg-transparent px-4 py-3 text-sm outline-none focus:border-[var(--color-primary)]"
-        />
-      </label>
-      <label class="flex flex-col gap-2 text-sm">
-        <span class="text-[var(--color-muted)]">{t('notes','tag_label', lang)}</span>
-        <select
-          name="tag"
-          value={tag ?? ''}
-          class="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-soft)] px-4 py-3 text-sm outline-none transition focus:border-[var(--color-primary)] focus:bg-[var(--color-bg)]"
-        >
-          <option value="">{t('blog','tag_all', lang)}</option>
-          {tags.map((option) => (
-            <option value={option}>{option}</option>
-          ))}
-        </select>
-      </label>
-      <div class="md:col-span-2 flex justify-end gap-3">
-        <button type="submit" class="btn btn-primary text-sm">{lang === 'zh' ? '筛选' : 'Filter'}</button>
-        {(q || tag) && (
-          <a href={notesHref} class="btn btn-secondary text-sm">{lang === 'zh' ? '重置' : 'Reset'}</a>
-        )}
-      </div>
-    </form>
-
     <section class="mt-8 grid gap-6 md:grid-cols-2">
-      {visibleNotes.length === 0 && (
-        <div class="text-sm text-[var(--color-muted)]">{t('notes','empty', lang)}</div>
-      )}
-      {visibleNotes.map((note) => {
+      {allNotes.map((note) => {
         const anchorId = `${note.id}-${lang}`;
         const description = note.summary;
         const keywords = [note.title, note.summary, note.tags.join(' '), note.updatedAt].join(' ');
@@ -89,6 +42,7 @@ const notesHref = localeHref(lang, '/notes');
           data-search-anchor={anchorId}
           data-search-description={description}
           data-search-keywords={keywords}
+          data-tags={note.tags.join(',')}
           data-search-link={note.link ?? ''}
           class="card flex h-full flex-col gap-4 p-6"
         >
