@@ -12,26 +12,42 @@ import config from "./src/config/config.json" with { type: "json" };
 
 // 智能检测部署环境
 const isDev = import.meta.env.DEV;
-const isGitHubPages = process.env.GITHUB_ACTIONS === 'true' || process.env.DEPLOY_TARGET === 'github-pages';
+
+// 从配置读取 GitHub 信息
+const githubUser = config.site.github_user;
+const githubRepo = config.site.github_repo;
+const hasGitHubConfig = githubUser && githubRepo;
 
 // 动态配置 site 和 base
 let site, base;
 
 if (isDev) {
-  // 本地开发环境
-  site = process.env.SITE_URL || 'http://localhost:4321';
-  base = process.env.BASE_PATH || '/';
-} else if (isGitHubPages) {
-  // GitHub Pages 部署
-  const user = config.site.github_user || 'username';
-  const repo = config.site.github_repo || 'repo';
-  site = `https://${user}.github.io/${repo}`;
-  base = `/${repo}/`;
+  // 开发环境：始终使用 localhost
+  site = 'http://localhost:4321';
+  base = '/';
 } else {
-  // 其他生产环境 (Vercel, Netlify, etc.)
- 
-  site = process.env.SITE_URL || 'https://yourdomain.com';
-  base = process.env.BASE_PATH || '/';
+  // 生产环境：优先级从高到低
+  
+  // 1. 显式指定的环境变量（最高优先级 - 覆盖所有默认行为）
+  if (process.env.SITE_URL) {
+    site = process.env.SITE_URL;
+    base = process.env.BASE_PATH || '/';
+  }
+  // 2. GitHub Actions 自动检测（CI/CD 环境）
+  else if (process.env.GITHUB_ACTIONS === 'true' && hasGitHubConfig) {
+    site = `https://${githubUser}.github.io/${githubRepo}`;
+    base = `/${githubRepo}/`;
+  }
+  // 3. 有 GitHub 配置就默认用 GitHub Pages（本地构建也会用这个）
+  else if (hasGitHubConfig) {
+    site = `https://${githubUser}.github.io/${githubRepo}`;
+    base = `/${githubRepo}/`;
+  }
+  // 4. 兜底：没有任何配置时的默认值
+  else {
+    site = 'https://yourdomain.com';
+    base = '/';
+  }
 }
 
 // https://astro.build/config
