@@ -37,9 +37,18 @@ const resolvedHighlights = highlights.map((item) => ({
       <CTA primary={ctaPrimary} secondary={ctaSecondary} />
     </div>
     <div class="grid flex-1 gap-4 sm:grid-cols-2">
-      {resolvedHighlights.map((item) => (
+      {resolvedHighlights.map((item, index) => (
         <figure class="card group overflow-hidden p-0">
-          <img src={item.src} alt={item.alt} loading="lazy" class="h-44 w-full object-cover transition duration-300 group-hover:scale-105" />
+          <img
+            src={item.src}
+            alt={item.alt}
+            width="1200"
+            height="800"
+            loading={index === 0 ? "eager" : "lazy"}
+            fetchpriority={index === 0 ? "high" : "low"}
+            decoding={index === 0 ? "sync" : "async"}
+            class="h-44 w-full object-cover transition duration-300 group-hover:scale-105"
+          />
           <figcaption class="space-y-1 p-4 text-sm text-[var(--color-muted)]">
             <span class="font-medium text-[var(--color-fg)]">{item.caption}</span>
           </figcaption>

@@ -10,7 +10,8 @@
     --color-fg: #0B0D12;
     --color-muted: #4B5563;
     --color-border: #E5E7EB;
-    --color-primary: #5B8CFF;
+    /* Darker than brand blue so small link text meets WCAG AA on white (~5.2:1). */
+    --color-primary: #2563EB;
     --color-secondary: #AA5BFF;
     --gradient-primary: linear-gradient(135deg, #5B8CFF 0%, #AA5BFF 100%);
   }

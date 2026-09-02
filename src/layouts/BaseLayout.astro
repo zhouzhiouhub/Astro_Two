@@ -1,8 +1,15 @@
 ---
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import "../styles/tailwind.css";
 import SearchModal from "@/components/SearchModal.astro";
 import { seo as buildSeo } from "@/lib/seo";
 import { SUPPORTED_LOCALES, defaultLocale, pathWithLocale, type Locale } from "@/lib/i18n";
+
+const langDetectCoreJs = readFileSync(join(process.cwd(), "public/lang-detect-core.js"), "utf8");
+const langAutoRedirectJs = readFileSync(join(process.cwd(), "public/lang-auto-redirect.js"), "utf8");
+const langBootstrapHtml =
+  "<script>" + langDetectCoreJs + "</script><script>" + langAutoRedirectJs + "</script>";
 
 type Alternate = { lang: Locale; url: string };
 type Structured = Record<string, unknown> | Array<Record<string, unknown>>;
@@ -19,6 +26,7 @@ interface Props {
   alternates?: Alternate[];
   appendSiteName?: boolean;
   structuredData?: Structured;
+  preloadImage?: string;
 }
 
 const {
@@ -33,6 +41,7 @@ const {
   alternates: providedAlternates = [],
   appendSiteName,
   structuredData,
+  preloadImage,
 } = Astro.props as Props;
 
 const currentUrl = providedUrl ?? Astro.url.href;
@@ -100,12 +109,8 @@ const withBasePath = (value: string) => {
 <!doctype html>
 <html lang={lang} data-pagefind-filter={`language:${lang}`} data-base-path={normalizedBasePath || undefined}>
   <head>
-    <!-- Language Detection Core Module (must be loaded first) -->
-    <script is:inline src={withBasePath('lang-detect-core.js')}></script>
-    
-    <!-- Auto Language Redirect (runs immediately after core) -->
-    <script is:inline src={withBasePath('lang-auto-redirect.js')}></script>
-    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- Theme Detection (original script) -->
     <script is:inline>
       try {
@@ -119,8 +124,11 @@ const withBasePath = (value: string) => {
         // no-op if storage is unavailable
       }
     </script>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Language detection + redirect: inlined to avoid render-blocking network requests -->
+    <Fragment set:html={langBootstrapHtml} />
+    {preloadImage && (
+      <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />
+    )}
     <title>{meta.title}</title>
     <meta name="description" content={meta.description} />
     <link rel="canonical" href={meta.canonical} />

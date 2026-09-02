@@ -43,7 +43,7 @@ const posts = (await getCollection('posts'))
 const projects = projectsByLocale[lang].slice(0, 3);
 const notes = notesByLocale[lang].slice(0, 3);
 ---
-<Base title={content.seoTitle} desc={content.seoDescription} url={url} lang={lang} appendSiteName={false}>
+<Base title={content.seoTitle} desc={content.seoDescription} url={url} lang={lang} appendSiteName={false} preloadImage={withBase("/og/hero-code.svg")}>
   <Header lang={lang} />
 
   <main>

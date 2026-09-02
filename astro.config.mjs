@@ -57,6 +57,11 @@ export default defineConfig({
   // Pure static output - no SSR or server endpoints needed
   output: "static",
 
+  // Inline the (already small) Tailwind bundle so first paint is not blocked on a CSS request.
+  build: {
+    inlineStylesheets: "always",
+  },
+
   // Image optimization uses Sharp service by default in Astro 4.x
   image: {
     service: {

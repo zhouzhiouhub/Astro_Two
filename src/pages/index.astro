@@ -1,15 +1,15 @@
 ---
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { SUPPORTED_LOCALES, defaultLocale } from "@/lib/i18n";
 import siteConfig from "@/config/config.json" assert { type: "json" };
 export const prerender = true;
 
+const langDetectCoreJs = readFileSync(join(process.cwd(), "public/lang-detect-core.js"), "utf8");
+
 // Get base URL for proper path construction
 const base = import.meta.env.BASE_URL || '/';
 const baseWithoutTrailingSlash = base.replace(/\/$/, '');
-const assetPath = (value: string) => {
-  const trimmed = value.replace(/^\//, '');
-  return `${baseWithoutTrailingSlash}/${trimmed}`.replace(/\/+/, '/');
-};
 const supportedLocales = Array.from(SUPPORTED_LOCALES);
 const trailingSlashEnabled = Boolean(siteConfig?.site?.trailing_slash);
 const localeSuffix = trailingSlashEnabled ? '/' : '';
@@ -24,9 +24,9 @@ const localeHref = (lang: string) => `${baseWithoutTrailingSlash}/${lang}${local
   <meta name="robots" content="noindex, nofollow">
   <title></title>
   
-  <!-- Language Detection Core Module -->
-  <script is:inline src={assetPath('lang-detect-core.js')}></script>
-  
+  <!-- Language Detection Core Module (inlined to avoid a render-blocking request) -->
+  <Fragment set:html={"<script>" + langDetectCoreJs + "</script>"} />
+
   <!-- Root Path Redirect -->
   <script is:inline define:vars={{ baseUrl: baseWithoutTrailingSlash, supportedLocales, defaultLocale, localeSuffix }}>
     // Root path redirect - immediate and silent
