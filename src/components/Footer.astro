@@ -36,7 +36,8 @@ const localized = {
   privacy: localeHref(lang, '/privacy'),
   terms: localeHref(lang, '/terms'),
 };
-const logoSrc = withBase('/logo.svg');
+const logoLight = withBase('/logo-wordmark-light.svg');
+const logoDark = withBase('/logo-wordmark-dark.svg');
 const rssHref = withBase('/rss.xml');
 
 function normalizeSvg(raw: string) {
@@ -83,7 +84,8 @@ const links = [
   <!-- top brand + tagline -->
   <div class="flex items-center justify-between mb-6">
     <a href={localized.home} class="inline-flex items-center gap-3">
-      <img src={logoSrc} alt="logo" class="h-10 w-10 md:h-12 md:w-12" />
+      <img src={logoLight} alt="kinolin" class="h-8 w-auto md:h-10 dark:hidden" />
+      <img src={logoDark} alt="kinolin" class="hidden h-8 w-auto md:h-10 dark:block" />
       <span class="sr-only">Home</span>
     </a>
     <p class="hidden md:block text-[var(--color-muted)]">{t('footer','tagline', lang)}</p>
