@@ -159,7 +159,7 @@
         newPath = pathWithoutBase.replace(/^\/(en|zh)(\/|$)/, `/${targetLang}$2`);
       } else {
         const suffix = pathWithoutBase.startsWith('/') ? pathWithoutBase : `/${pathWithoutBase}`;
-        newPath = `/${targetLang}${suffix}`.replace(/\/+g, '/');
+        newPath = `/${targetLang}${suffix}`.replace(/\/+/g, '/');
       }
 
       return joinWithBase(baseUrl, newPath);

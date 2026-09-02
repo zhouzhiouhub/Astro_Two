@@ -57,6 +57,6 @@
   }
   .btn-primary { background: var(--gradient-primary); color: #0B0D12; }
   .btn-secondary { @apply bg-transparent border border-[var(--color-border)] text-[var(--color-fg)]; background: rgba(255,255,255,0.03); }
-  .card { @apply rounded-xl border border-[var(--color-border)] backdrop-blur; box-shadow: var(--shadow, none); background: var(--color-bg-soft); }
+  .card { @apply rounded-xl border border-[var(--color-border)]; box-shadow: var(--shadow, none); background: var(--color-bg-soft); }
   .badge { @apply inline-flex items-center rounded-full border border-[var(--color-border)] px-3 py-1 text-xs tracking-wide text-[var(--color-muted)]; background: rgba(255,255,255,0.03); }
 }
